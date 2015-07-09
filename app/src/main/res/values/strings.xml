@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">K Republic</string>
+
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_example">Example action</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="fraud">Fraud</string>
+    <string name="bribery">Bribery</string>
+    <string name="abuse">Abuse of power</string>
+    <string name="waste">Waste of public resources</string>
+    <string name="extortion">Extortion</string>
+    <string name="embezzlement">Embezzlement</string>
+    <string name="favoritism">Favoritism, nepotism, clientelism</string>
+
+    <string name="doublearrow">&#187;</string>
+
+    <string name="frauddescription">An act of deliberate deception to secure unlawful gain</string>
+    <string name="briberydescription">Money or gift offered to secure illicit gain</string>
+    <string name="abusedescription">Use of office for personal, injustice, or other malfeasance</string>
+    <string name="wastedescription">Deliberate or negligent misuse of public resources</string>
+    <string name="extortiondescription">Money or other items obtained through force or threats</string>
+    <string name="embezzlementdescription">Theft or misappropriation of funds</string>
+    <string name="favoritismdescription">Unfair advantage given to relatives or supporters</string>
+
+</resources>
