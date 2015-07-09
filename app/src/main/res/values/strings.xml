@@ -28,5 +28,18 @@
     <string name="extortiondescription">Money or other items obtained through force or threats</string>
     <string name="embezzlementdescription">Theft or misappropriation of funds</string>
     <string name="favoritismdescription">Unfair advantage given to relatives or supporters</string>
+    <string name="facebook_app_id">799290236855997</string>
+    <string name="title_activity_incident_detail">IncidentDetail</string>
+    <string name="opening_line">For the love of God, my country and myself, I\'d like to report a case of:</string>
+    <string name="at">At</string>
+    <string name="location_hint">City, town, institution, office, etc.</string>
+    <string name="incident_description">So here is what happened</string>
+    <string name="evidence">And I even have as evidence, a</string>
+    <string name="honor_code"><b>Honor code:</b> I promise that this is true and not a libelous statement intended to ruin someone\'s reputation</string>
+    <string name="video">Video</string>
+    <string name="voice">Voice record</string>
+    <string name="photo">Photo</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="submit">Submit</string>
 
 </resources>
