@@ -28,6 +28,8 @@ public class MainActivity extends AppCompatActivity
 
         FacebookSdk.sdkInitialize(getApplicationContext());
 
+
+
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();

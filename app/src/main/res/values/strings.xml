@@ -37,7 +37,8 @@
     <string name="evidence">And I even have as evidence, a</string>
     <string name="honor_code"><b>Honor code:</b> I promise that this is true and not a libelous statement intended to ruin someone\'s reputation</string>
     <string name="video">Video</string>
-    <string name="voice">Voice record</string>
+    <string name="voice">Voice</string>
+    <string name="gallery">Gallery</string>
     <string name="photo">Photo</string>
     <string name="hello_world">Hello world!</string>
     <string name="submit">Submit</string>
