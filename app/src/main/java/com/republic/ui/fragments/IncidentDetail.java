@@ -3,8 +3,10 @@ package com.republic.ui.fragments;
 import android.app.Activity;
 import android.content.Intent;
 import android.media.MediaRecorder;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -22,9 +24,12 @@ import com.facebook.HttpMethod;
 import com.republic.ui.R;
 import com.republic.ui.support.Utils;
 
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
+import org.apache.commons.io.FileUtils;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
 
 public class IncidentDetail extends Fragment {
 
@@ -39,6 +44,8 @@ public class IncidentDetail extends Fragment {
     private String fileName;
     private ImageButton voiceButton;
     private Button recordingButton;
+    String videoFileName;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -50,7 +57,6 @@ public class IncidentDetail extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        initializeFields();
         setupButtons();
     }
 
@@ -74,7 +80,7 @@ public class IncidentDetail extends Fragment {
             ImageButton galleryButton = (ImageButton) view.findViewById(R.id.galleryButton);
             galleryButton.setOnClickListener(buttonClickListener);
 
-            Button submitButton = (Button)view.findViewById(R.id.submitButton);
+            Button submitButton = (Button) view.findViewById(R.id.submitButton);
             submitButton.setOnClickListener(buttonClickListener);
         }
     }
@@ -105,42 +111,71 @@ public class IncidentDetail extends Fragment {
         AccessToken accessToken = new AccessToken(Utils.Constants.FB_ACCESS_TOKEN,
                 Utils.Constants.FB_APP_ID,
                 Utils.Constants.PAGE_PROFILE_ID,
-                null,null,
+                null, null,
                 AccessTokenSource.FACEBOOK_APPLICATION_WEB
-                ,null,null);
+                , null, null);
+
+        File file = new File(fileName);
 
         Bundle params = new Bundle();
-        params.putString("message","Akua is awesome!");
+
+        params.putByteArray(fileName, convertFileToBytes(file));
         GraphRequest request = new GraphRequest(accessToken,
-                Utils.Constants.PAGE_FEED,params, HttpMethod.POST, new GraphRequest.Callback(){
+                Utils.Constants.PAGE_VIDEOS, params, HttpMethod.POST, new GraphRequest.Callback() {
             @Override
             public void onCompleted(GraphResponse graphResponse) {
-
+                if (graphResponse.getError() != null) {
+                    Utils.makeToast(getActivity(), R.string.failed);
+                } else {
+                  Utils.makeToast(getActivity(),R.string.success);
+                }
             }
         });
 
         request.executeAsync();
     }
 
-    private void initializeFields() {
-        audioRecorder = new MediaRecorder();
+    private byte[] convertFileToBytes(File file) {
+        byte[] fileBytes = null;
+
+        try {
+            fileBytes = FileUtils.readFileToByteArray(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return fileBytes;
     }
 
     private void launchVideoRecorder() {
+        Uri videoFileUri = getVideoFileUri();
 
         Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, videoFileUri);
         intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 30);
-        startActivityForResult(intent, 28);
+        startActivityForResult(intent, Utils.Constants.VIDEO_REQUEST_CODE);
+    }
+
+    private Uri getVideoFileUri() {
+        File mediaDir = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES), Utils.Constants.MEDIA_PATH);
+        if (!mediaDir.exists()) {
+            mediaDir.mkdirs();
+        }
+        videoFileName = mediaDir.getPath() + File.separator + getCurrentTime() + ".mp4";
+        File videoFile = new File(videoFileName);
+
+        return Uri.fromFile(videoFile);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (data != null && resultCode == Activity.RESULT_OK) {
+        if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case Utils.Constants.VIDEO_REQUEST_CODE:
-                    break;
+                    break; //TODO doing nothing yet
                 case Utils.Constants.CAMERA_REQUEST_CODE:
-                    break;
+                    break; //TODO doing nothing yet
             }
         }
     }
@@ -151,13 +186,23 @@ public class IncidentDetail extends Fragment {
         startActivityForResult(intent, 288);
     }
 
+    private String getCurrentTime() {
+        return String.valueOf(Calendar.getInstance().getTimeInMillis());
+    }
+
     private void prepareAudioRecorder() {
-        fileName = getActivity().getCacheDir().getAbsolutePath() + "/"
-                + String.valueOf(Math.random() * 10) + ".awb";
+        File mediaDir = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES), Utils.Constants.MEDIA_PATH);
+        if (!mediaDir.exists()) {
+            mediaDir.mkdirs();
+        }
+        fileName = mediaDir.getPath() + File.separator + getCurrentTime() + ".mp4";
+
+        audioRecorder = new MediaRecorder();
         audioRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        audioRecorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
+        audioRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
         audioRecorder.setOutputFile(fileName);
-        audioRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        audioRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
 
         try {
             audioRecorder.prepare();
@@ -166,17 +211,18 @@ public class IncidentDetail extends Fragment {
         }
     }
 
-    private void toggleRecordingButtonsVisibility(boolean isRecording){
+    private void toggleRecordingButtonsVisibility(boolean isRecording) {
         Utils.switchViewVisibility(!isRecording, voiceButton);
         Utils.switchViewVisibility(isRecording, recordingButton);
     }
+
     private void launchAudioRecorder() {
         prepareAudioRecorder();
         toggleRecordingButtonsVisibility(true);
         audioRecorder.start();
 
 
-        new CountDownTimer(30000,1000){
+        new CountDownTimer(30000, 1000) {
             @Override
             public void onTick(long remaining) {
                 String s = String.format("%d : %d",
@@ -197,8 +243,8 @@ public class IncidentDetail extends Fragment {
 
     }
 
-    private void disposeAudioRecorder(){
-        if(audioRecorder != null) {
+    private void disposeAudioRecorder() {
+        if (audioRecorder != null) {
             audioRecorder.stop();
             audioRecorder.release();
             audioRecorder = null;
@@ -208,6 +254,6 @@ public class IncidentDetail extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-       disposeAudioRecorder();
+        disposeAudioRecorder();
     }
 }

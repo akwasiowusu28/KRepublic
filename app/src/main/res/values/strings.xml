@@ -42,5 +42,7 @@
     <string name="photo">Photo</string>
     <string name="hello_world">Hello world!</string>
     <string name="submit">Submit</string>
+    <string name="success">Media successfully uploaded!</string>
+    <string name="failed">Media upload failed :-(</string>
 
 </resources>
