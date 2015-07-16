@@ -4,6 +4,9 @@ import android.content.Context;
 import android.view.View;
 import android.widget.Toast;
 
+import java.io.File;
+import java.util.Calendar;
+
 /** *
  * Created by Akwasi Owusu on 7/9/15.
  */
@@ -20,6 +23,7 @@ public class Utils {
         public static final String PAGE_PHOTOS = "1030146627004888/photos";
         public static final String MEDIA_PATH = "media/";
         public static final String AUTHORITY = "com.republic.ui.fileprovider";
+        private static final String MP4 = ".mp4";
     }
 
     public static void switchViewVisibility(boolean visible, View... views) {
@@ -30,5 +34,9 @@ public class Utils {
 
     public static void makeToast(Context context, int stringId) {
         Toast.makeText(context, stringId, Toast.LENGTH_LONG).show();
+    }
+
+    public static String makeFileName() {
+        return  File.separator + String.valueOf(Calendar.getInstance().getTimeInMillis()) + Constants.MP4;
     }
 }
