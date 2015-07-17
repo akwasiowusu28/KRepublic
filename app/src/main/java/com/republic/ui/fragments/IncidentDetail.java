@@ -3,36 +3,34 @@ package com.republic.ui.fragments;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.media.MediaRecorder;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.PopupMenu;
 
 import com.republic.ui.R;
-import com.republic.ui.support.PostHelper;
 import com.republic.ui.support.Utils;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
+import com.republic.ui.support.launchingstrategy.AudioRecordLauncher;
+import com.republic.ui.support.launchingstrategy.CamcorderLauncher;
+import com.republic.ui.support.launchingstrategy.CameraLauncher;
+import com.republic.ui.support.launchingstrategy.LaunchMaster;
+import com.republic.ui.support.launchingstrategy.MediaFileSystemLauncher;
+import com.republic.ui.support.postingstrategy.AudioPoster;
+import com.republic.ui.support.postingstrategy.PhotoPoster;
+import com.republic.ui.support.postingstrategy.PostMaster;
+import com.republic.ui.support.postingstrategy.VideoPoster;
 
 public class IncidentDetail extends Fragment {
 
-    private static class LocalConstants{
-        public static final int GALLERY_PHOTO_REQUEST = 2888;
-        public static final int GALLERY_VIDEO_REQUEST = 28888;
-        public static final int GALLERY_AUDIO_REQUEST = 288888;
+    private enum SelectedMediaType {
+        VIDEO, PHOTO, AUDIO
     }
 
     public static IncidentDetail newInstance() {
@@ -42,14 +40,12 @@ public class IncidentDetail extends Fragment {
         return fragment;
     }
 
-    private MediaRecorder audioRecorder;
     private String audioFileName;
-    private ImageButton voiceButton;
-    private Button recordingButton;
+    private String photoFileName;
     String videoFileName;
     private Context context;
-    private String imageFileName;
-    ImageButton galleryButton;
+    private AudioRecordLauncher audioRecordLauncher;
+    private SelectedMediaType selectedMediaType;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -62,12 +58,12 @@ public class IncidentDetail extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         setupButtons();
-
         initializeFields();
     }
 
     private void initializeFields() {
         context = getActivity();
+        audioRecordLauncher = new AudioRecordLauncher<String>(this);
     }
 
     private void setupButtons() {
@@ -77,16 +73,16 @@ public class IncidentDetail extends Fragment {
             ImageButton videoButton = (ImageButton) view.findViewById(R.id.videoButton);
             videoButton.setOnClickListener(buttonClickListener);
 
-            voiceButton = (ImageButton) view.findViewById(R.id.voiceButton);
+            ImageButton voiceButton = (ImageButton) view.findViewById(R.id.voiceButton);
             voiceButton.setOnClickListener(buttonClickListener);
 
-            recordingButton = (Button) view.findViewById(R.id.recordingButton);
+            Button recordingButton = (Button) view.findViewById(R.id.recordingButton);
             recordingButton.setOnClickListener(buttonClickListener);
 
             ImageButton cameraButton = (ImageButton) view.findViewById(R.id.cameraButton);
             cameraButton.setOnClickListener(buttonClickListener);
 
-            galleryButton = (ImageButton) view.findViewById(R.id.galleryButton);
+            ImageButton galleryButton = (ImageButton) view.findViewById(R.id.galleryButton);
             galleryButton.setOnClickListener(buttonClickListener);
 
             Button submitButton = (Button) view.findViewById(R.id.submitButton);
@@ -102,19 +98,22 @@ public class IncidentDetail extends Fragment {
 
             switch (view.getId()) {
                 case R.id.videoButton:
-                    launchVideoRecorder();
+                    videoFileName = new LaunchMaster<String>(new CamcorderLauncher<String>(IncidentDetail.this)).launch();
+                    selectedMediaType = SelectedMediaType.VIDEO;
                     break;
                 case R.id.cameraButton:
-                    launchCamera();
+                    photoFileName = new LaunchMaster<String>(new CameraLauncher<String>(IncidentDetail.this)).launch();
+                    selectedMediaType = SelectedMediaType.PHOTO;
                     break;
                 case R.id.voiceButton:
-                    launchAudioRecorder();
+                    audioFileName = new LaunchMaster<String>(audioRecordLauncher).launch();
+                    selectedMediaType = SelectedMediaType.AUDIO;
+                    break;
+                case R.id.galleryButton:
+                    new LaunchMaster(new MediaFileSystemLauncher(IncidentDetail.this)).launch();
                     break;
                 case R.id.submitButton:
                     submit();
-                    break;
-                case R.id.galleryButton:
-                    openMediaFilesOnSystem();
                     break;
             }
         }
@@ -122,68 +121,16 @@ public class IncidentDetail extends Fragment {
 
     private void submit() {
 
-        PostHelper.postAudioLinkToFaceBook(context, audioFileName);
-    }
-
-
-    private void openMediaFilesOnSystem() {
-        // Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Video.Media.)
-        PopupMenu popupMenu = new PopupMenu(context, galleryButton);
-        popupMenu.getMenuInflater().inflate(R.menu.menu_gallery, popupMenu.getMenu());
-
-        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                browse(menuItem.getItemId());
-                return true;
-            }
-        });
-
-        popupMenu.show();
-    }
-
-
-    private void browse(int selectedGalleryItem) {
-        Intent intent = null;
-        int requestCode = -1;
-
-        switch (selectedGalleryItem) {
-            case R.id.action_photo:
-                intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                requestCode = LocalConstants.GALLERY_PHOTO_REQUEST;
+        switch (selectedMediaType){
+            case VIDEO:
+                new PostMaster(context, new VideoPoster()).post(videoFileName);
                 break;
-            case R.id.action_video:
-                intent = new Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
-                requestCode = LocalConstants.GALLERY_VIDEO_REQUEST;
+            case PHOTO:
+                new PostMaster(context, new PhotoPoster()).post(photoFileName);
                 break;
-            case R.id.action_audio:
-                intent = new Intent(Intent.ACTION_PICK, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
-                requestCode = LocalConstants.GALLERY_AUDIO_REQUEST;
-                break;
+            case AUDIO:
+                new PostMaster(context, new AudioPoster()).post(audioFileName);
         }
-        if (intent != null)
-            startActivityForResult(intent, requestCode);
-    }
-
-    private void launchVideoRecorder() {
-        Uri videoFileUri = getVideoFileUri();
-
-        Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, videoFileUri);
-        intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 30);
-        startActivityForResult(intent, Utils.Constants.VIDEO_REQUEST_CODE);
-    }
-
-    private Uri getVideoFileUri() {
-        File mediaDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES), Utils.Constants.MEDIA_PATH);
-        if (!mediaDir.exists()) {
-            mediaDir.mkdirs();
-        }
-        videoFileName = mediaDir.getPath() + Utils.makeFileName();
-        File videoFile = new File(videoFileName);
-
-        return Uri.fromFile(videoFile);
     }
 
     @Override
@@ -194,81 +141,48 @@ public class IncidentDetail extends Fragment {
                     break; //TODO doing nothing yet
                 case Utils.Constants.CAMERA_REQUEST_CODE:
                     break; //TODO doing nothing yet
+                case Utils.Constants.GALLERY_PHOTO_REQUEST:
+                    if (data != null) {
+                        photoFileName = retrieveFilePathFromUri(data.getData(), MediaStore.Images.Media.DATA);
+                        selectedMediaType = SelectedMediaType.PHOTO;
+                    }
+                    break;
+                case Utils.Constants.GALLERY_VIDEO_REQUEST:
+                    if (data != null) {
+                        videoFileName = retrieveFilePathFromUri(data.getData(), MediaStore.Video.Media.DATA);
+                        selectedMediaType = SelectedMediaType.VIDEO;
+                    }
+                    break;
+                case Utils.Constants.GALLERY_AUDIO_REQUEST:
+                    if (data != null) {
+                        audioFileName = retrieveFilePathFromUri(data.getData(), MediaStore.Images.Media.DATA);
+                        selectedMediaType = SelectedMediaType.AUDIO;
+                    }
+                    break;
             }
         }
     }
 
-    private void launchCamera() {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 30);
-        startActivityForResult(intent, 288);
-    }
+    private String retrieveFilePathFromUri(Uri data, String projectionClause) {
 
-    private void prepareAudioRecorder() {
-        File mediaDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_MUSIC), Utils.Constants.MEDIA_PATH);
-        if (!mediaDir.exists()) {
-            mediaDir.mkdirs();
-        }
-        audioFileName = mediaDir.getPath() + Utils.makeFileName();
+        String[] projection = {projectionClause};
 
-        audioRecorder = new MediaRecorder();
-        audioRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        audioRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-        audioRecorder.setOutputFile(audioFileName);
-        audioRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        Cursor cursor = context.getContentResolver().query(data,
+                projection, null, null, null);
 
+        cursor.moveToFirst();
 
-        try {
-            audioRecorder.prepare();
-        } catch (IOException e) {
-            //TODO: log it
-        }
-    }
+        int columnIndex = cursor.getColumnIndex(projection[0]);
+        String filePath = cursor.getString(columnIndex);
 
-    private void toggleRecordingButtonsVisibility(boolean isRecording) {
-        Utils.switchViewVisibility(!isRecording, voiceButton);
-        Utils.switchViewVisibility(isRecording, recordingButton);
-    }
+        cursor.close();
 
-    private void launchAudioRecorder() {
-        prepareAudioRecorder();
-        toggleRecordingButtonsVisibility(true);
-        audioRecorder.start();
-
-
-        new CountDownTimer(30000, 1000) {
-            @Override
-            public void onTick(long remaining) {
-                String s = String.format("%d : %d",
-                        TimeUnit.MILLISECONDS.toMinutes(remaining),
-                        TimeUnit.MILLISECONDS.toSeconds(remaining));
-                recordingButton.setText(s);
-
-            }
-
-            @Override
-            public void onFinish() {
-
-                recordingButton.setCompoundDrawables(null, null, null, null);
-                recordingButton.setText("Done!");
-                disposeAudioRecorder();
-            }
-        }.start();
-
-    }
-
-    private void disposeAudioRecorder() {
-        if (audioRecorder != null) {
-            audioRecorder.stop();
-            audioRecorder.release();
-            audioRecorder = null;
-        }
+        return filePath;
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        disposeAudioRecorder();
+        audioRecordLauncher.disposeAudioRecorder();
     }
 }

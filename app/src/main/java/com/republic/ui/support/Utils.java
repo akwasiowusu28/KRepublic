@@ -4,7 +4,10 @@ import android.content.Context;
 import android.view.View;
 import android.widget.Toast;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.File;
+import java.io.IOException;
 import java.util.Calendar;
 
 /** *
@@ -24,6 +27,9 @@ public class Utils {
         public static final String MEDIA_PATH = "media/";
         public static final String AUTHORITY = "com.republic.ui.fileprovider";
         private static final String MP4 = ".mp4";
+        public static final int GALLERY_PHOTO_REQUEST = 2888;
+        public static final int GALLERY_VIDEO_REQUEST = 28888;
+        public static final int GALLERY_AUDIO_REQUEST = 288888;
     }
 
     public static void switchViewVisibility(boolean visible, View... views) {
@@ -38,5 +44,17 @@ public class Utils {
 
     public static String makeFileName() {
         return  File.separator + String.valueOf(Calendar.getInstance().getTimeInMillis()) + Constants.MP4;
+    }
+
+    public static byte[] convertFileToBytes(File file) {
+        byte[] fileBytes = null;
+
+        try {
+            fileBytes = FileUtils.readFileToByteArray(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return fileBytes;
     }
 }
