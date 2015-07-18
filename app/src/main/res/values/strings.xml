@@ -48,5 +48,14 @@
     <string name="soundcloud_client_secret">afa997bbe96d2a114db9b17a4c0c5f2a</string>
     <string name="soundcloud_pword">kwansema\'smysteries</string>
     <string name="soundcloud_login_id">kwansemarepublic@gmail.com</string>
-
+    <string name="title_activity_signup">Signup</string>
+    <string name="name">Name</string>
+    <string name="password">Password</string>
+    <string name="confirmPassword">Confirm password</string>
+    <string name="createAccount">Join</string>
+    <string name="joinTheRepublic">Join the republic</string>
+    <string name="phone">Phone</string>
+    <string name="title_activity_login">Login</string>
+    <string name="dontHaveAccount">Not a member yet?</string>
+    <string name="login">login</string>
 </resources>
