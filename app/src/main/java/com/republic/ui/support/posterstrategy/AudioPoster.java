@@ -10,7 +10,7 @@ import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
 import com.republic.entities.Corruption;
 import com.republic.ui.R;
-import com.republic.ui.support.OperationCallback;
+import com.republic.support.OperationCallback;
 import com.republic.ui.support.Utils;
 
 import de.voidplus.soundcloud.SoundCloud;
