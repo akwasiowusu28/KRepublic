@@ -23,7 +23,7 @@
 
     <string name="frauddescription">An act of deliberate deception to secure unlawful gain</string>
     <string name="briberydescription">Money or gift offered to secure illicit gain</string>
-    <string name="abusedescription">Use of office for personal, injustice, or other malfeasance</string>
+    <string name="abusedescription">Use of office for personal gain, injustice, or other malfeasance</string>
     <string name="wastedescription">Deliberate or negligent misuse of public resources</string>
     <string name="extortiondescription">Money or other items obtained through force or threats</string>
     <string name="embezzlementdescription">Theft or misappropriation of funds</string>
