@@ -30,6 +30,7 @@ public class Utils {
         public static final int GALLERY_PHOTO_REQUEST = 2888;
         public static final int GALLERY_VIDEO_REQUEST = 28888;
         public static final int GALLERY_AUDIO_REQUEST = 288888;
+        public static final String SELECTED_CORRUPTION_TYPE = "SelectedCorruptionType";
     }
 
     public static void switchViewVisibility(boolean visible, View... views) {

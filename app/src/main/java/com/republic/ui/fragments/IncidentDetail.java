@@ -13,25 +13,25 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 
+import com.republic.entities.Corruption;
+import com.republic.entities.CorruptionType;
+import com.republic.entities.MediaType;
 import com.republic.ui.R;
 import com.republic.ui.support.Utils;
-import com.republic.ui.support.launchingstrategy.AudioRecordLauncher;
-import com.republic.ui.support.launchingstrategy.CamcorderLauncher;
-import com.republic.ui.support.launchingstrategy.CameraLauncher;
-import com.republic.ui.support.launchingstrategy.LaunchMaster;
-import com.republic.ui.support.launchingstrategy.MediaFileSystemLauncher;
-import com.republic.ui.support.postingstrategy.AudioPoster;
-import com.republic.ui.support.postingstrategy.PhotoPoster;
-import com.republic.ui.support.postingstrategy.PostMaster;
-import com.republic.ui.support.postingstrategy.VideoPoster;
+import com.republic.ui.support.medialauncherstrategy.AudioRecordLauncher;
+import com.republic.ui.support.medialauncherstrategy.CamcorderLauncher;
+import com.republic.ui.support.medialauncherstrategy.CameraLauncher;
+import com.republic.ui.support.medialauncherstrategy.LaunchMaster;
+import com.republic.ui.support.medialauncherstrategy.MediaFileSystemLauncher;
+import com.republic.ui.support.posterstrategy.AudioPoster;
+import com.republic.ui.support.posterstrategy.PhotoPoster;
+import com.republic.ui.support.posterstrategy.PostMaster;
+import com.republic.ui.support.posterstrategy.VideoPoster;
 
 public class IncidentDetail extends Fragment {
-
-    private enum SelectedMediaType {
-        VIDEO, PHOTO, AUDIO
-    }
 
     public static IncidentDetail newInstance() {
         IncidentDetail fragment = new IncidentDetail();
@@ -45,7 +45,8 @@ public class IncidentDetail extends Fragment {
     String videoFileName;
     private Context context;
     private AudioRecordLauncher audioRecordLauncher;
-    private SelectedMediaType selectedMediaType;
+    private MediaType selectedMediaType;
+    private CorruptionType corruptionType;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -63,7 +64,7 @@ public class IncidentDetail extends Fragment {
 
     private void initializeFields() {
         context = getActivity();
-        audioRecordLauncher = new AudioRecordLauncher<String>(this);
+        audioRecordLauncher = new AudioRecordLauncher(this);
     }
 
     private void setupButtons() {
@@ -98,16 +99,16 @@ public class IncidentDetail extends Fragment {
 
             switch (view.getId()) {
                 case R.id.videoButton:
-                    videoFileName = new LaunchMaster<String>(new CamcorderLauncher<String>(IncidentDetail.this)).launch();
-                    selectedMediaType = SelectedMediaType.VIDEO;
+                    videoFileName = new LaunchMaster(new CamcorderLauncher(IncidentDetail.this)).launch();
+                    selectedMediaType = MediaType.VIDEO;
                     break;
                 case R.id.cameraButton:
-                    photoFileName = new LaunchMaster<String>(new CameraLauncher<String>(IncidentDetail.this)).launch();
-                    selectedMediaType = SelectedMediaType.PHOTO;
+                    photoFileName = new LaunchMaster(new CameraLauncher(IncidentDetail.this)).launch();
+                    selectedMediaType = MediaType.PHOTO;
                     break;
                 case R.id.voiceButton:
-                    audioFileName = new LaunchMaster<String>(audioRecordLauncher).launch();
-                    selectedMediaType = SelectedMediaType.AUDIO;
+                    audioFileName = new LaunchMaster(audioRecordLauncher).launch();
+                    selectedMediaType = MediaType.AUDIO;
                     break;
                 case R.id.galleryButton:
                     new LaunchMaster(new MediaFileSystemLauncher(IncidentDetail.this)).launch();
@@ -121,16 +122,40 @@ public class IncidentDetail extends Fragment {
 
     private void submit() {
 
-        switch (selectedMediaType){
+        switch (selectedMediaType) {
             case VIDEO:
-                new PostMaster(context, new VideoPoster()).post(videoFileName);
+                new PostMaster(context, new VideoPoster()).post(buildCorruptionObject(videoFileName));
                 break;
             case PHOTO:
-                new PostMaster(context, new PhotoPoster()).post(photoFileName);
+                new PostMaster(context, new PhotoPoster()).post(buildCorruptionObject(photoFileName));
                 break;
             case AUDIO:
-                new PostMaster(context, new AudioPoster()).post(audioFileName);
+                new PostMaster(context, new AudioPoster()).post(buildCorruptionObject(audioFileName));
         }
+    }
+
+    private Corruption buildCorruptionObject(String fileName) {
+        Corruption corruption = new Corruption();
+        corruption.setMediaFilePath(fileName);
+
+        View view = getView();
+
+        if (view != null) {
+            String location = ((EditText) view.findViewById(R.id.location)).getText().toString();
+            String description = ((EditText) view.findViewById(R.id.incidentDescription)).getText().toString();
+            corruption.setLocation(location);
+            corruption.setDescription(description);
+        }
+        corruption.setCorruptionType(getSelectedCorruptionType());
+
+        return corruption;
+    }
+
+    private CorruptionType getSelectedCorruptionType() {
+        Bundle args = this.getArguments();
+        CorruptionType corruptionType =
+                (CorruptionType) args.getSerializable(Utils.Constants.SELECTED_CORRUPTION_TYPE);
+        return corruptionType;
     }
 
     @Override
@@ -144,19 +169,19 @@ public class IncidentDetail extends Fragment {
                 case Utils.Constants.GALLERY_PHOTO_REQUEST:
                     if (data != null) {
                         photoFileName = retrieveFilePathFromUri(data.getData(), MediaStore.Images.Media.DATA);
-                        selectedMediaType = SelectedMediaType.PHOTO;
+                        selectedMediaType = MediaType.PHOTO;
                     }
                     break;
                 case Utils.Constants.GALLERY_VIDEO_REQUEST:
                     if (data != null) {
                         videoFileName = retrieveFilePathFromUri(data.getData(), MediaStore.Video.Media.DATA);
-                        selectedMediaType = SelectedMediaType.VIDEO;
+                        selectedMediaType = MediaType.VIDEO;
                     }
                     break;
                 case Utils.Constants.GALLERY_AUDIO_REQUEST:
                     if (data != null) {
                         audioFileName = retrieveFilePathFromUri(data.getData(), MediaStore.Images.Media.DATA);
-                        selectedMediaType = SelectedMediaType.AUDIO;
+                        selectedMediaType = MediaType.AUDIO;
                     }
                     break;
             }

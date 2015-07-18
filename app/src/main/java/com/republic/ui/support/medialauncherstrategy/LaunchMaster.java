@@ -1,9 +1,9 @@
-package com.republic.ui.support.launchingstrategy;
+package com.republic.ui.support.medialauncherstrategy;
 
 /** *
  * Created by Akwasi Owusu on 7/16/15.
  */
-public class LaunchMaster<T> {
+public class LaunchMaster {
 
     private Launcher launcher;
 
@@ -12,7 +12,7 @@ public class LaunchMaster<T> {
         this.launcher = launcher;
     }
 
-    public T launch(){
-       return (T)launcher.launch();
+    public String launch(){
+       return launcher.launch();
     }
 }

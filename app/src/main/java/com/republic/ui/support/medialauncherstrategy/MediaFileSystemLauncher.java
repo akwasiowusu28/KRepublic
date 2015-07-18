@@ -1,4 +1,4 @@
-package com.republic.ui.support.launchingstrategy;
+package com.republic.ui.support.medialauncherstrategy;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,7 +16,7 @@ import com.republic.ui.support.Utils;
 /** *
  * Created by Akwasi Owusu on 7/16/15.
  */
-public class MediaFileSystemLauncher<T> implements Launcher<T> {
+public class MediaFileSystemLauncher implements Launcher {
 
     private Context context;
     private ImageButton galleryButton;
@@ -34,7 +34,7 @@ public class MediaFileSystemLauncher<T> implements Launcher<T> {
     }
 
     @Override
-    public T launch() {
+    public String launch() {
         PopupMenu popupMenu = new PopupMenu(context, galleryButton);
         popupMenu.getMenuInflater().inflate(R.menu.menu_gallery, popupMenu.getMenu());
 

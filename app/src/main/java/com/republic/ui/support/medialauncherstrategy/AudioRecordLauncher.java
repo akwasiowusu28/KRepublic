@@ -1,4 +1,4 @@
-package com.republic.ui.support.launchingstrategy;
+package com.republic.ui.support.medialauncherstrategy;
 
 import android.media.MediaRecorder;
 import android.os.CountDownTimer;
@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 /** *
  * Created by Akwasi Owusu on 7/16/15.
  */
-public class AudioRecordLauncher<T> implements Launcher<T>{
+public class AudioRecordLauncher implements Launcher{
 
     private Button recordingButton;
     private ImageButton voiceButton;
@@ -32,7 +32,7 @@ public class AudioRecordLauncher<T> implements Launcher<T>{
     }
 
     @Override
-    public T launch() {
+    public String launch() {
 
         prepareAudioRecorder();
         toggleRecordingButtonsVisibility(true);
@@ -58,7 +58,7 @@ public class AudioRecordLauncher<T> implements Launcher<T>{
             }
         }.start();
 
-        return (T)audioFileName;
+        return audioFileName;
     }
 
     private void toggleRecordingButtonsVisibility(boolean isRecording) {

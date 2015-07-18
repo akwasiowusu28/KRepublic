@@ -9,9 +9,11 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.republic.entities.CorruptionType;
 import com.republic.ui.R;
 import com.republic.ui.adapters.MainPageListviewAdapter;
 import com.republic.ui.support.NavigationHelper;
+import com.republic.ui.support.Utils;
 
 import static android.widget.AdapterView.OnItemClickListener;
 
@@ -47,9 +49,18 @@ public class ReportFragment extends Fragment {
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
             FragmentManager fragmentTransaction = getActivity().getSupportFragmentManager();
+
+            Fragment incidentDetail = IncidentDetail.newInstance();
+
+            //Reason for accessing enum value with position is, the order of the list items matches
+            // the order of the constants in the CorruptionType enum
+            incidentDetail.getArguments().putSerializable(Utils.Constants.SELECTED_CORRUPTION_TYPE,
+                    CorruptionType.values()[position]);
+
             fragmentTransaction.beginTransaction().
-                    replace(R.id.container, IncidentDetail.newInstance()).commit();
+                    replace(R.id.container, incidentDetail).commit();
         }
     };
 }
