@@ -1,5 +1,6 @@
 package com.republic.ui.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -8,9 +9,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.facebook.FacebookSdk;
+import com.republic.domain.UserController;
+import com.republic.support.RepublicFactory;
 import com.republic.ui.R;
 import com.republic.ui.fragments.NavigationDrawerFragment;
 import com.republic.ui.fragments.ReportFragment;
+import com.republic.ui.support.Utils;
 
 
 public class MainActivity extends AppCompatActivity
@@ -28,7 +32,7 @@ public class MainActivity extends AppCompatActivity
 
         FacebookSdk.sdkInitialize(getApplicationContext());
 
-
+        RepublicFactory.getDomain().initialize(this);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -39,9 +43,27 @@ public class MainActivity extends AppCompatActivity
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
+        redirectIfNotLoggedIn();
+        redirectIfNotNumberConfirmed();
     }
 
 
+    private void redirectIfNotLoggedIn(){
+
+        UserController userController = RepublicFactory.getUserController();
+        if(userController != null){
+            String token = userController.getStoredToken();
+            if(Utils.isEmptyString(token)){
+                Intent intent = new Intent(this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        }
+    }
+
+    private void redirectIfNotNumberConfirmed(){
+
+    }
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {

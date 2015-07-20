@@ -30,7 +30,7 @@ public class UserControllerImpl implements UserController {
 
     @Override
     public String getStoredToken() {
-        return null;
+        return cloudService.getUserToken();
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.republic.cloudbaas;
 
 import com.backendless.Backendless;
+import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.backendless.persistence.local.UserTokenStorageFactory;
@@ -15,6 +16,13 @@ public class CloudServiceImpl implements CloudService {
 
     private boolean isLogin = false;
 
+
+    @Override
+    public <T> void initialize(T dataContext) {
+        Backendless.initApp(dataContext, LocalConstants.APPLICATION_ID,
+                LocalConstants.SECRET_KEY, LocalConstants.VERSION);
+    }
+
     public void addUser(User user, OperationCallback callback) {
 
     }
@@ -23,7 +31,7 @@ public class CloudServiceImpl implements CloudService {
 
         isLogin = true;
 
-        Backendless.UserService.login(userId, password, new BackendAsyncCallBack<>(operationCallback), true);
+        Backendless.UserService.login(userId, password, new BackendAsyncCallBack<BackendlessUser>(operationCallback), true);
     }
 
 
@@ -34,7 +42,7 @@ public class CloudServiceImpl implements CloudService {
 
     @Override
     public String getUserToken() {
-        return null;
+        return UserTokenStorageFactory.instance().getStorage().get();
     }
 
     private class BackendAsyncCallBack<T> implements AsyncCallback<T> {
@@ -49,7 +57,7 @@ public class CloudServiceImpl implements CloudService {
         public void handleResponse(T response) {
             if (isLogin) {
 
-                String result = UserTokenStorageFactory.instance().getStorage().get();
+                String result = getUserToken();
                 callback.performOperation(result);
                 isLogin = false;
 
@@ -62,5 +70,11 @@ public class CloudServiceImpl implements CloudService {
         public void handleFault(BackendlessFault fault) {
             callback.onOperationFailed(new CloudRequestFailedException(fault.getMessage()));
         }
+    }
+
+    private class LocalConstants{
+        public static final String APPLICATION_ID = "E7F75A25-A1E0-CC13-FF5B-111FBA427400";
+        public static final String SECRET_KEY = "7F9A514F-01DF-409D-FF72-3F1E8C9AFC00";
+        public static final String VERSION = "v1";
     }
 }

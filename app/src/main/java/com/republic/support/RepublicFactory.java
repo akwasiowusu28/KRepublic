@@ -2,6 +2,8 @@ package com.republic.support;
 
 import com.republic.cloudbaas.CloudServiceImpl;
 import com.republic.cloudbaas.CloudService;
+import com.republic.domain.Domain;
+import com.republic.domain.DomainImpl;
 import com.republic.domain.UserController;
 import com.republic.domain.UserControllerImpl;
 
@@ -16,5 +18,9 @@ public class RepublicFactory {
 
     public static UserController getUserController() {
         return new UserControllerImpl();
+    }
+
+    public static Domain getDomain(){
+        return new DomainImpl();
     }
 }

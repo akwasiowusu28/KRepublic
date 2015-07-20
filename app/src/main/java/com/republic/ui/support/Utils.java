@@ -58,4 +58,8 @@ public class Utils {
 
         return fileBytes;
     }
+
+    public static boolean isEmptyString(String value){
+        return value == null || value.isEmpty();
+    }
 }

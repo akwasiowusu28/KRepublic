@@ -11,7 +11,7 @@ public class Corruption {
     private String mediaFilePath;
     private String postId;
     private MediaType mediaType;
-    private User user;
+    private String ownerId;
 
     public CorruptionType getCorruptionType() {
         return corruptionType;
@@ -61,13 +61,11 @@ public class Corruption {
         this.mediaType = mediaType;
     }
 
-    public User getUser() {
-        return user;
+    public String getOwnerId() {
+        return ownerId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setOwnerId(String ownerId) {
+        this.ownerId = ownerId;
     }
-
-
 }

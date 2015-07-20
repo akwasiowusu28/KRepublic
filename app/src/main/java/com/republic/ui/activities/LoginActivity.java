@@ -1,14 +1,19 @@
 package com.republic.ui.activities;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 
 import com.republic.domain.UserController;
+import com.republic.support.OperationCallback;
 import com.republic.support.RepublicFactory;
 import com.republic.ui.R;
+import com.republic.ui.support.Utils;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -39,13 +44,34 @@ public class LoginActivity extends AppCompatActivity {
                 case R.id.loginButton:
                     break;
                 case R.id.signupButton:
+                    launchSignUpActivity();
                     break;
             }
         }
     };
 
     private void login(){
-        userController.login("","",null);
+        String phone = ((EditText)findViewById(R.id.loginPhoneNumber)).getText().toString();
+        String password = ((EditText)findViewById(R.id.loginPassword)).getText().toString();
+        userController.login(phone, password, new OperationCallback() {
+            @Override
+            public <T> void performOperation(T arg) {
+                Context context = LoginActivity.this;
 
+                String token = arg.toString();
+                if(token == null || token.isEmpty()){
+                    Utils.makeToast(context, R.string.login_failed);
+                }
+                else {
+                    Intent intent = new Intent(context, MainActivity.class);
+                    startActivity(intent);
+                }
+            }
+        });
+    }
+
+    private void launchSignUpActivity(){
+        Intent intent = new Intent(this, SignUpActivity.class);
+        startActivity(intent);
     }
 }

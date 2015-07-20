@@ -51,7 +51,7 @@
         </receiver>
 
         <activity
-            android:name=".activities.Signup"
+            android:name=".activities.SignUpActivity"
             android:label="@string/title_activity_signup" >
         </activity>
         <activity

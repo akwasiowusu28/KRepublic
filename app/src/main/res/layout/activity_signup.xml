@@ -5,7 +5,7 @@
               android:orientation="vertical"
               android:padding="10dp"
               android:weightSum="1"
-              tools:context="com.republic.ui.activities.Signup">
+              tools:context="com.republic.ui.activities.SignUpActivity">
 
     <TextView
         android:layout_width="wrap_content"
