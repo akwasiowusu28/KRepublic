@@ -1,9 +1,9 @@
 package com.republic.ui.activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -15,7 +15,7 @@ import com.republic.support.RepublicFactory;
 import com.republic.ui.R;
 import com.republic.ui.support.Utils;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends Activity {
 
     private UserController userController;
 
@@ -42,6 +42,7 @@ public class LoginActivity extends AppCompatActivity {
             switch (view.getId()){
 
                 case R.id.loginButton:
+                    login();
                     break;
                 case R.id.signupButton:
                     launchSignUpActivity();

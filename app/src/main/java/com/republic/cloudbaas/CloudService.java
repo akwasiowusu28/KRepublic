@@ -14,7 +14,7 @@ public interface CloudService {
 
     void loginUser(String userId, String password, OperationCallback operationCallback);
 
-    <T> void addDataItem(T dataItem, OperationCallback callback);
+    void findUserByField(String fieldName, String searchValue, OperationCallback operationCallback);
 
     String getUserToken();
 }

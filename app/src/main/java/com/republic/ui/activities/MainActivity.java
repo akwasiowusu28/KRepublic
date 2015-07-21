@@ -10,6 +10,7 @@ import android.view.MenuItem;
 
 import com.facebook.FacebookSdk;
 import com.republic.domain.UserController;
+import com.republic.support.OperationCallback;
 import com.republic.support.RepublicFactory;
 import com.republic.ui.R;
 import com.republic.ui.fragments.NavigationDrawerFragment;
@@ -24,6 +25,7 @@ public class MainActivity extends AppCompatActivity
     private NavigationDrawerFragment mNavigationDrawerFragment;
 
     private CharSequence mTitle;
+    UserController userController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +35,8 @@ public class MainActivity extends AppCompatActivity
         FacebookSdk.sdkInitialize(getApplicationContext());
 
         RepublicFactory.getDomain().initialize(this);
+
+        userController = RepublicFactory.getUserController();
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -50,7 +54,7 @@ public class MainActivity extends AppCompatActivity
 
     private void redirectIfNotLoggedIn(){
 
-        UserController userController = RepublicFactory.getUserController();
+
         if(userController != null){
             String token = userController.getStoredToken();
             if(Utils.isEmptyString(token)){
@@ -62,7 +66,14 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void redirectIfNotNumberConfirmed(){
-
+       userController.verifyConfirmed(Utils.getDeviceId(this), new OperationCallback() {
+           @Override
+           public <T> void performOperation(T arg) {
+               if(!Boolean.getBoolean(arg.toString())){
+                   //redirect to confirm Page
+               }
+           }
+       });
     }
 
     @Override

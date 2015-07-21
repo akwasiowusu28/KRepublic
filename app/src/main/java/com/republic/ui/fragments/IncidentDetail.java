@@ -16,9 +16,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
+import com.republic.domain.UserController;
 import com.republic.entities.Corruption;
 import com.republic.entities.CorruptionType;
 import com.republic.entities.MediaType;
+import com.republic.support.OperationCallback;
+import com.republic.support.RepublicFactory;
 import com.republic.ui.R;
 import com.republic.ui.support.Utils;
 import com.republic.ui.support.medialauncherstrategy.AudioRecordLauncher;
@@ -29,6 +32,7 @@ import com.republic.ui.support.medialauncherstrategy.MediaFileSystemLauncher;
 import com.republic.ui.support.posterstrategy.AudioPoster;
 import com.republic.ui.support.posterstrategy.PhotoPoster;
 import com.republic.ui.support.posterstrategy.PostMaster;
+import com.republic.ui.support.posterstrategy.Poster;
 import com.republic.ui.support.posterstrategy.VideoPoster;
 
 public class IncidentDetail extends Fragment {
@@ -46,7 +50,9 @@ public class IncidentDetail extends Fragment {
     private Context context;
     private AudioRecordLauncher audioRecordLauncher;
     private MediaType selectedMediaType;
-    private CorruptionType corruptionType;
+    private String userId = null;
+    private UserController userController;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -65,6 +71,14 @@ public class IncidentDetail extends Fragment {
     private void initializeFields() {
         context = getActivity();
         audioRecordLauncher = new AudioRecordLauncher(this);
+        userController = RepublicFactory.getUserController();
+        userController.getUserId(Utils.getDeviceId(context), new OperationCallback() {
+            @Override
+            public <T> void performOperation(T arg) {
+                userId = arg.toString();
+            }
+        });
+
     }
 
     private void setupButtons() {
@@ -124,38 +138,51 @@ public class IncidentDetail extends Fragment {
 
         switch (selectedMediaType) {
             case VIDEO:
-                new PostMaster(context, new VideoPoster()).post(buildCorruptionObject(videoFileName));
+                postCorruption(videoFileName, new VideoPoster());
                 break;
             case PHOTO:
-                new PostMaster(context, new PhotoPoster()).post(buildCorruptionObject(photoFileName));
+                postCorruption(photoFileName, new PhotoPoster());
                 break;
             case AUDIO:
-                new PostMaster(context, new AudioPoster()).post(buildCorruptionObject(audioFileName));
+                postCorruption(audioFileName, new AudioPoster());
+                break;
+        }
+    }
+
+    private void postCorruption(String fileName, Poster poster){
+        Corruption corruption = buildCorruptionObject(fileName);
+
+        if(corruption != null){
+            new PostMaster(context, poster).post(corruption);
+        }else {
+            // show a message
         }
     }
 
     private Corruption buildCorruptionObject(String fileName) {
-        Corruption corruption = new Corruption();
-        corruption.setMediaFilePath(fileName);
+        Corruption corruption = null;
+        if(userId != null) {
+           corruption = new Corruption();
+            corruption.setMediaFilePath(fileName);
 
-        View view = getView();
+            View view = getView();
 
-        if (view != null) {
-            String location = ((EditText) view.findViewById(R.id.location)).getText().toString();
-            String description = ((EditText) view.findViewById(R.id.incidentDescription)).getText().toString();
-            corruption.setLocation(location);
-            corruption.setDescription(description);
+            if (view != null) {
+                String location = ((EditText) view.findViewById(R.id.location)).getText().toString();
+                String description = ((EditText) view.findViewById(R.id.incidentDescription)).getText().toString();
+                corruption.setLocation(location);
+                corruption.setDescription(description);
+            }
+            corruption.setCorruptionType(getSelectedCorruptionType());
+            corruption.setOwnerId(userId);
         }
-        corruption.setCorruptionType(getSelectedCorruptionType());
-
         return corruption;
     }
 
     private CorruptionType getSelectedCorruptionType() {
         Bundle args = this.getArguments();
-        CorruptionType corruptionType =
-                (CorruptionType) args.getSerializable(Utils.Constants.SELECTED_CORRUPTION_TYPE);
-        return corruptionType;
+
+        return (CorruptionType) args.getSerializable(Utils.Constants.SELECTED_CORRUPTION_TYPE);
     }
 
     @Override

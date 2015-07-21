@@ -14,4 +14,10 @@ public interface UserController {
     String getStoredToken();
 
     void updateUser(User user, String field, Object value, OperationCallback operationCallBack);
+
+    void checkPhoneExists(String phone, OperationCallback operationCallback);
+
+    void verifyConfirmed(String objectId, OperationCallback operationCallBack);
+
+    void getUserId(String deviceId, final OperationCallback operationCallback);
 }

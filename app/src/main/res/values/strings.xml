@@ -58,5 +58,13 @@
     <string name="title_activity_login">Login</string>
     <string name="dontHaveAccount">Not a member yet?</string>
     <string name="login">login</string>
-    <string name="login_failed">Login failed</string>
+    <string name="login_failed">Wrong username or password</string>
+    <string name="accountLookupFailed">No user exists with this number in the system</string>
+    <string name="accountExistForOtherDevice">An account has already been set up on a different device. Would you like to set it up for this device instead?</string>
+    <string name="differentDevices">Different Devices</string>
+    <string name="pleaseWait">Please wait&#8230;</string>
+    <string name="accountExistForPhone">An account already exists for this phone number. Please enter a different phone number</string>
+    <string name="passwordsNotMatch">Passwords do not match</string>
+    <string name="createAccountFailed">Error creating account. Please ensure that you have a stable internet connection and try again</string>
+    <string name="createAccountSuccess">Account successfully created!</string>
 </resources>
