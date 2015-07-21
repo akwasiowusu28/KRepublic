@@ -19,6 +19,7 @@
             android:value="@string/facebook_app_id" />
 
         <service android:name="com.backendless.AndroidService" />
+
         <provider
             android:name="com.facebook.FacebookContentProvider"
             android:authorities="com.facebook.app.FacebookContentProvider1234"
@@ -57,6 +58,10 @@
         <activity
             android:name=".activities.LoginActivity"
             android:label="@string/title_activity_login" >
+        </activity>
+        <activity
+            android:name=".activities.ConfirmActivity"
+            android:label="@string/title_activity_confirm" >
         </activity>
     </application>
 

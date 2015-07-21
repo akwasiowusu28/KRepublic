@@ -58,9 +58,7 @@ public class MainActivity extends AppCompatActivity
         if(userController != null){
             String token = userController.getStoredToken();
             if(Utils.isEmptyString(token)){
-                Intent intent = new Intent(this, LoginActivity.class);
-                startActivity(intent);
-                finish();
+                launchRedirectActivity(LoginActivity.class);
             }
         }
     }
@@ -70,10 +68,16 @@ public class MainActivity extends AppCompatActivity
            @Override
            public <T> void performOperation(T arg) {
                if(!Boolean.getBoolean(arg.toString())){
-                   //redirect to confirm Page
+                   launchRedirectActivity(ConfirmActivity.class);
                }
            }
        });
+    }
+
+    private void launchRedirectActivity(Class activityClass){
+        Intent intent = new Intent(this, activityClass);
+        startActivity(intent);
+        finish();
     }
 
     @Override

@@ -56,8 +56,8 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
-    public void verifyConfirmed(String objectId, final OperationCallback operationCallBack) {
-        cloudService.findUserByField(LocalConstants.OBJECT_ID, objectId, new OperationCallback() {
+    public void verifyConfirmed(String deviceId, final OperationCallback operationCallBack) {
+        cloudService.findUserByField(LocalConstants.DEVICE_ID, deviceId, new OperationCallback() {
             @Override
             public <T> void performOperation(T arg) {
                 BackendlessUser backendlessUser = (BackendlessUser)arg;

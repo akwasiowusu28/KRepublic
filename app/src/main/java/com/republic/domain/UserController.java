@@ -17,7 +17,7 @@ public interface UserController {
 
     void checkPhoneExists(String phone, OperationCallback operationCallback);
 
-    void verifyConfirmed(String objectId, OperationCallback operationCallBack);
+    void verifyConfirmed(String deviceId, OperationCallback operationCallBack);
 
     void getUserId(String deviceId, final OperationCallback operationCallback);
 }
