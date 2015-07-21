@@ -25,19 +25,24 @@ public class MainActivity extends AppCompatActivity
     private NavigationDrawerFragment mNavigationDrawerFragment;
 
     private CharSequence mTitle;
-    UserController userController;
+    private UserController userController;
+    private boolean loginRequested = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
         FacebookSdk.sdkInitialize(getApplicationContext());
-
         RepublicFactory.getDomain().initialize(this);
 
         userController = RepublicFactory.getUserController();
 
+        redirectIfNotLoggedIn();
+
+        if(!loginRequested) {
+            redirectIfNotNumberConfirmed();
+        }
+        setContentView(R.layout.activity_main);
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
@@ -47,17 +52,17 @@ public class MainActivity extends AppCompatActivity
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
-        redirectIfNotLoggedIn();
-        redirectIfNotNumberConfirmed();
+
+
     }
 
 
     private void redirectIfNotLoggedIn(){
 
-
         if(userController != null){
             String token = userController.getStoredToken();
             if(Utils.isEmptyString(token)){
+                loginRequested = true;
                 launchRedirectActivity(LoginActivity.class);
             }
         }

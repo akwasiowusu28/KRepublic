@@ -2,6 +2,7 @@ package com.republic.ui.support;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -31,12 +32,12 @@ public class Utils {
         public static final String PAGE_VIDEOS = "1030146627004888/videos";
         public static final String PAGE_PHOTOS = "1030146627004888/photos";
         public static final String MEDIA_PATH = "media/";
-        public static final String AUTHORITY = "com.republic.ui.fileprovider";
         private static final String MP4 = ".mp4";
         public static final int GALLERY_PHOTO_REQUEST = 2888;
         public static final int GALLERY_VIDEO_REQUEST = 28888;
         public static final int GALLERY_AUDIO_REQUEST = 288888;
         public static final String SELECTED_CORRUPTION_TYPE = "SelectedCorruptionType";
+        public static final String PREF_FILE = "com.republic.RepublicPREF";
     }
 
     private static Drawable defaultEditTextBackground = null;
@@ -96,5 +97,10 @@ public class Utils {
         TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(
                 Context.TELEPHONY_SERVICE);
         return telephonyManager.getDeviceId();
+    }
+
+    public static void writeToPref(Context context, String key, String value){
+        SharedPreferences sharedPreference = context.getSharedPreferences(Constants.PREF_FILE, Context.MODE_PRIVATE);
+
     }
 }
