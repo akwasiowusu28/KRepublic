@@ -1,6 +1,7 @@
 package com.republic.ui.activities;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.republic.domain.UserController;
+import com.republic.entities.User;
 import com.republic.support.OperationCallback;
 import com.republic.support.RepublicFactory;
 import com.republic.ui.R;
@@ -21,7 +23,7 @@ public class SignUpActivity extends AppCompatActivity {
     private UserController userController;
     private String phoneNumber;
     private ProgressDialog progressDialog;
-
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +31,7 @@ public class SignUpActivity extends AppCompatActivity {
         setContentView(R.layout.activity_signup);
 
         userController = RepublicFactory.getUserController();
+        context = this;
         setupSignUpButton();
     }
 
@@ -46,14 +49,14 @@ public class SignUpActivity extends AppCompatActivity {
 
         phoneNumber = ((EditText) findViewById(R.id.phoneNumber)).getText().toString();
 
-        userController.checkPhoneExists(phoneNumber, new OperationCallback() {
+        userController.checkPhoneExists(phoneNumber, new OperationCallback<User>() {
 
             @Override
-            public <T> void performOperation(T arg) {
+            public void performOperation(User arg) {
                 if (arg == null) {
                     performCreateAccount();
                 } else {
-                    Utils.makeToast(SignUpActivity.this, R.string.accountExistForPhone);
+                    Utils.makeToast(context, R.string.accountExistForPhone);
                     dismissProgressDialog();
                 }
             }
@@ -88,24 +91,26 @@ public class SignUpActivity extends AppCompatActivity {
             createUser(name, phoneNumber, password);
         } else {
             Utils.switchInvalidFieldsBackColor(false, passwordField, confirmPasswordField);
-            Utils.makeToast(SignUpActivity.this, R.string.passwordsNotMatch);
+            Utils.makeToast(context, R.string.passwordsNotMatch);
             dismissProgressDialog();
         }
     }
 
-    private void createUser(String name, String phone, String password) {
+    private void createUser(final String name, final String phone, final String password) {
 
-        userController.createUser(name, phone, password,Utils.getDeviceId(this), new OperationCallback() {
+        userController.createUser(name, phone, password,Utils.getDeviceId(this), new OperationCallback<User>() {
 
             @Override
-            public <T> void performOperation(T arg) {
+            public void performOperation(User arg) {
+                Utils.writeToPref(context, Utils.Constants.USER_CONFIRMED, String.valueOf(false));
                 dismissProgressDialog();
-                launchMainActivity();
+                userController.login(phone, password, null); // attempt log in, fire and forget...idea is, if successful, user will not be shown the log in page when the main page launches
+                launchConfirmActivity();
             }
 
             @Override
             public void onOperationFailed(Throwable e) {
-                Utils.makeToast(SignUpActivity.this, R.string.createAccountFailed);
+                Utils.makeToast(context, R.string.createAccountFailed);
                 dismissProgressDialog();
             }
         });
@@ -134,8 +139,8 @@ public class SignUpActivity extends AppCompatActivity {
         return password.equals(confirmPassword);
     }
 
-    private void launchMainActivity() {
-        Intent intent = new Intent(this, MainActivity.class);
+    private void launchConfirmActivity() {
+        Intent intent = new Intent(this, ConfirmActivity.class);
         startActivity(intent);
         finish();
     }

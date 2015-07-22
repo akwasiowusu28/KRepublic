@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.republic.domain.UserController;
+import com.republic.entities.User;
 import com.republic.support.OperationCallback;
 import com.republic.support.RepublicFactory;
 import com.republic.ui.R;
@@ -18,11 +19,14 @@ import com.republic.ui.support.Utils;
 public class LoginActivity extends Activity {
 
     private UserController userController;
-
+    private Context context;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        context = LoginActivity.this;
+
         setupButtons();
     }
 
@@ -52,24 +56,25 @@ public class LoginActivity extends Activity {
     };
 
     private void login(){
-        String phone = ((EditText)findViewById(R.id.loginPhoneNumber)).getText().toString();
+        final String phone = ((EditText)findViewById(R.id.loginPhoneNumber)).getText().toString();
         String password = ((EditText)findViewById(R.id.loginPassword)).getText().toString();
-        userController.login(phone, password, new OperationCallback() {
+        userController.login(phone, password, new OperationCallback<User>() {
             @Override
-            public <T> void performOperation(T arg) {
-                Context context = LoginActivity.this;
+            public void performOperation(User user) {
 
-                String token = arg.toString();
-                if(token == null || token.isEmpty()){
+                if(user == null){
                     Utils.makeToast(context, R.string.login_failed);
                 }
                 else {
-                    Intent intent = new Intent(context, MainActivity.class);
+                    //write the user id to phone so we can perform all subsequent cloud requests with that
+                    Utils.writeToPref(context, Utils.Constants.USER_TOKEN, user.getObjectId());
+                    Intent intent = new Intent(context, user.isConfirmed() ? MainActivity.class : ConfirmActivity.class);
                     startActivity(intent);
                 }
             }
         });
     }
+
 
     private void launchSignUpActivity(){
         Intent intent = new Intent(this, SignUpActivity.class);

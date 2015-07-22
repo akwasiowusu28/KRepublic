@@ -10,7 +10,6 @@ import android.view.MenuItem;
 
 import com.facebook.FacebookSdk;
 import com.republic.domain.UserController;
-import com.republic.support.OperationCallback;
 import com.republic.support.RepublicFactory;
 import com.republic.ui.R;
 import com.republic.ui.fragments.NavigationDrawerFragment;
@@ -37,11 +36,6 @@ public class MainActivity extends AppCompatActivity
 
         userController = RepublicFactory.getUserController();
 
-        redirectIfNotLoggedIn();
-
-        if(!loginRequested) {
-            redirectIfNotNumberConfirmed();
-        }
         setContentView(R.layout.activity_main);
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -53,14 +47,18 @@ public class MainActivity extends AppCompatActivity
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
 
+        redirectIfNotLoggedIn();
 
+        if(!loginRequested) {
+            redirectIfNotNumberConfirmed();
+        }
     }
 
 
     private void redirectIfNotLoggedIn(){
 
         if(userController != null){
-            String token = userController.getStoredToken();
+            String token = Utils.readFromPref(this, Utils.Constants.USER_TOKEN);
             if(Utils.isEmptyString(token)){
                 loginRequested = true;
                 launchRedirectActivity(LoginActivity.class);
@@ -69,14 +67,10 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void redirectIfNotNumberConfirmed(){
-       userController.verifyConfirmed(Utils.getDeviceId(this), new OperationCallback() {
-           @Override
-           public <T> void performOperation(T arg) {
-               if(!Boolean.getBoolean(arg.toString())){
-                   launchRedirectActivity(ConfirmActivity.class);
-               }
-           }
-       });
+        String userConfirmedPrefValue = Utils.readFromPref(this, Utils.Constants.USER_CONFIRMED);
+        if(!Boolean.parseBoolean(userConfirmedPrefValue)){
+            launchRedirectActivity(ConfirmActivity.class);
+        }
     }
 
     private void launchRedirectActivity(Class activityClass){

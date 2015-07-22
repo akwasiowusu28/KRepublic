@@ -38,6 +38,10 @@ public class Utils {
         public static final int GALLERY_AUDIO_REQUEST = 288888;
         public static final String SELECTED_CORRUPTION_TYPE = "SelectedCorruptionType";
         public static final String PREF_FILE = "com.republic.RepublicPREF";
+        public static final String EMPTY_STRING = "";
+        public static final String USER_CONFIRMED = "User confirmed";
+        public static final String USER_TOKEN = "User token";
+        public static final String PHONE ="phone";
     }
 
     private static Drawable defaultEditTextBackground = null;
@@ -101,6 +105,15 @@ public class Utils {
 
     public static void writeToPref(Context context, String key, String value){
         SharedPreferences sharedPreference = context.getSharedPreferences(Constants.PREF_FILE, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreference.edit();
+        editor.putString(key, value);
+        editor.commit();
+
+    }
+
+    public static String readFromPref(Context context, String key){
+        SharedPreferences sharedPreference = context.getSharedPreferences(Constants.PREF_FILE, Context.MODE_PRIVATE);
+        return sharedPreference.getString(key,Constants.EMPTY_STRING);
 
     }
 }

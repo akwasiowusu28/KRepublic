@@ -6,18 +6,18 @@ import com.republic.support.OperationCallback;
 public interface UserController {
 
     void createUser(String name, String phone, String password, String deviceId,
-                    OperationCallback operationCallBack);
+                    OperationCallback<User> operationCallBack);
 
 
-    void login(String password, String userId, OperationCallback operationCallback);
+    void findUser(String deviceId, OperationCallback<User> operationCallback);
 
-    String getStoredToken();
+    void login(String password, String userId, OperationCallback<User> operationCallback);
 
-    void updateUser(User user, String field, Object value, OperationCallback operationCallBack);
+    void updateUser(User user, OperationCallback<User> operationCallBack);
 
-    void checkPhoneExists(String phone, OperationCallback operationCallback);
+    void checkPhoneExists(String phone, OperationCallback<User> operationCallback);
 
-    void verifyConfirmed(String deviceId, OperationCallback operationCallBack);
+    void verifyConfirmed(String deviceId, OperationCallback<User> operationCallBack);
 
-    void getUserId(String deviceId, final OperationCallback operationCallback);
+  //  void getUserId(String deviceId, final OperationCallback operationCallback);
 }

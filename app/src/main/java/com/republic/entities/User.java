@@ -6,7 +6,6 @@ import com.backendless.BackendlessUser;
  * Created by Akwasi Owusu on 7/17/15.
  */
 public class User extends BackendlessUser {
-    private static final long serialVersionUID = 1L;
     private String objectId;
     private boolean isConfirmed;
     private String password;
@@ -45,7 +44,8 @@ public class User extends BackendlessUser {
         return isConfirmed;
     }
 
-    public void setConfirmed(boolean isConfirmed) {
+    public void setIsConfirmed(boolean isConfirmed) {
+        setProperty(LocalConstants.IS_CONFIRMED, isConfirmed);
         this.isConfirmed = isConfirmed;
     }
 

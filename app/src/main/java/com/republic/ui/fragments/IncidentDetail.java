@@ -20,6 +20,7 @@ import com.republic.domain.UserController;
 import com.republic.entities.Corruption;
 import com.republic.entities.CorruptionType;
 import com.republic.entities.MediaType;
+import com.republic.entities.User;
 import com.republic.support.OperationCallback;
 import com.republic.support.RepublicFactory;
 import com.republic.ui.R;
@@ -72,10 +73,10 @@ public class IncidentDetail extends Fragment {
         context = getActivity();
         audioRecordLauncher = new AudioRecordLauncher(this);
         userController = RepublicFactory.getUserController();
-        userController.getUserId(Utils.getDeviceId(context), new OperationCallback() {
+        userController.findUser(Utils.getDeviceId(context), new OperationCallback<User>() {
             @Override
-            public <T> void performOperation(T arg) {
-                userId = arg.toString();
+            public void performOperation(User arg) {
+                userId = arg.getUserId();
             }
         });
 

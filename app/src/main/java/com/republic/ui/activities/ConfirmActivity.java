@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.republic.domain.UserController;
 import com.republic.entities.User;
+import com.republic.support.OperationCallback;
 import com.republic.support.RepublicFactory;
 import com.republic.ui.R;
 import com.republic.ui.support.RepublicAlertDialog;
@@ -24,11 +25,11 @@ public class ConfirmActivity extends AppCompatActivity {
     private String confirmCode;
     private UserController userController;
     private RepublicAlertDialog confirmAlertDialog;
-    private String phoneNumber;
     private boolean confirmFieldsDisabled;
     private EditText confirmTextField;
     private TextView confirmLabel;
     private Button sendCodeButton;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,12 +44,11 @@ public class ConfirmActivity extends AppCompatActivity {
 
     private void initializeFields() {
         userController = RepublicFactory.getUserController();
-        Intent intent = getIntent();
-        phoneNumber = intent.getStringExtra(LocalConstants.PHONE_NUMBER);
         confirmFieldsDisabled = false;
         confirmTextField = (EditText) findViewById(R.id.confirmTextField);
         confirmLabel = (TextView) findViewById(R.id.confirmLabel);
         sendCodeButton = (Button) findViewById(R.id.sendConfirmCode);
+        user  = RepublicFactory.getSession().getCurrentUser();
 
     }
 
@@ -58,9 +58,11 @@ public class ConfirmActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                //if (updateUser().equals(OperationResult.SUCCESSFUL)) {
-                launchMainActivity();
-                // }
+                if(confirmTextField.getText().toString().equals(confirmCode)) {
+                    updateUser();
+                }else{
+                   Utils.makeToast(ConfirmActivity.this, R.string.confirmation_failed);
+                }
             }
         });
     }
@@ -113,25 +115,31 @@ public class ConfirmActivity extends AppCompatActivity {
         Utils.switchViewVisibility(makeVisible, confirmButton, confirmTextField, confirmLabel);
     }
 
-    private boolean updateUser() {
-        boolean result = false;
-        String enteredConfirmCode = ((EditText) findViewById(R.id.confirmTextField))
-                .getText().toString();
-        if (enteredConfirmCode.equals(confirmCode)) {
+    private void updateUser() {
 
-            User user = null;
-            userController.updateUser(user, LocalConstants.ISCONFIRMED, true, null);
+        if(user != null) {
+            user.setIsConfirmed(true);
+            userController.updateUser(user, new OperationCallback<User>() {
+                @Override
+                public  void performOperation(User arg) {
+                    Utils.writeToPref(ConfirmActivity.this, Utils.Constants.USER_CONFIRMED, String.valueOf(true));
+                    launchMainActivity();
+                }
 
+                @Override
+                public void onOperationFailed(Throwable e) {
+                    super.onOperationFailed(e);
+                    Utils.makeToast(ConfirmActivity.this, R.string.confirmation_failed);
+                }
+            });
         }
-        return result;
     }
 
     private void sendConfirmSMS() {
         generateConfirmCode();
-
+        String phoneNumber = user.getPhone();
         SmsManager manager = SmsManager.getDefault();
-        manager.sendTextMessage(phoneNumber, null, getConfirmMessage(),
-                null, null);
+        manager.sendTextMessage(phoneNumber, null, getConfirmMessage(), null, null);
     }
 
     private String getConfirmMessage() {
@@ -152,8 +160,7 @@ public class ConfirmActivity extends AppCompatActivity {
     }
 
     private class LocalConstants {
-        public static final String CONFIRM_SMS_MESSAGE = "Your Melanie confirmation code is: ";
-        public static final String PHONE_NUMBER = "phoneNumber";
+        public static final String CONFIRM_SMS_MESSAGE = "Your Republic membership confirmation code is: ";
         public static final String ISCONFIRMED = "isconfirmed";
     }
 }

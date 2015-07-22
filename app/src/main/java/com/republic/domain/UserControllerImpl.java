@@ -19,74 +19,125 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
-    public void createUser(String name, String phone, String password, String deviceId, OperationCallback operationCallBack) {
+    public void createUser(String name, String phone, String password, String deviceId, OperationCallback<User> operationCallBack) {
         User user = new User(name, password, phone, deviceId, false);
-        cloudService.addUser(user, operationCallBack);
-    }
-
-    @Override
-    public void login(String userId, String password, OperationCallback operationCallback) {
-         cloudService.loginUser(userId,password, operationCallback);
-    }
-
-    @Override
-    public String getStoredToken() {
-        return cloudService.getUserToken();
-    }
-
-    @Override
-    public void updateUser(User user, String field, Object value, OperationCallback operationCallBack) {
-
-    }
-
-    @Override
-    public void checkPhoneExists(String phone, final OperationCallback operationCallback) {
-      cloudService.findUserByField(LocalConstants.PHONE, phone, new OperationCallback() {
-          @Override
-          public <T> void performOperation(T arg) {
-               operationCallback.performOperation(arg);
-          }
-
-          @Override
-          public void onOperationFailed(Throwable e) {
-              super.onOperationFailed(e);
-              operationCallback.performOperation(null); // return null to caller signifying phone nonexistent
-          }
-      });
-    }
-
-    @Override
-    public void verifyConfirmed(String deviceId, final OperationCallback operationCallBack) {
-        cloudService.findUserByField(LocalConstants.DEVICE_ID, deviceId, new OperationCallback() {
+        RepublicFactory.getSession().setUser(user);
+        cloudService.addUser(user, new OperationCallback<BackendlessUser>() {
             @Override
-            public <T> void performOperation(T arg) {
-                BackendlessUser backendlessUser = (BackendlessUser)arg;
-                operationCallBack.performOperation(backendlessUser.getProperty(LocalConstants.IS_CONFIRMED));
+            public void performOperation(BackendlessUser arg) {
+                super.performOperation(arg);
             }
         });
     }
 
     @Override
-    public void getUserId(String deviceId, final OperationCallback operationCallback) {
-        cloudService.findUserByField(LocalConstants.DEVICE_ID, deviceId, new OperationCallback() {
+    public void findUser(String deviceId, final OperationCallback operationCallback) {
+       cloudService.findItemsByFieldName(LocalConstants.DEVICE_ID, deviceId, User.class, operationCallback);
+    }
+
+    @Override
+    public void login(String userId, String password, final OperationCallback operationCallback) {
+
+        cloudService.login(userId, password, new OperationCallback<BackendlessUser>() {
             @Override
-            public <T> void performOperation(T arg) {
-                BackendlessUser backendlessUser = (BackendlessUser)arg;
-                operationCallback.performOperation(backendlessUser.getProperty(LocalConstants.OBJECT_ID));
+            public void performOperation(BackendlessUser arg) {
+                User user = constructUserFromBackendless(arg);
+                RepublicFactory.getSession().setUser(user);
+                operationCallback.performOperation(user);
             }
 
             @Override
             public void onOperationFailed(Throwable e) {
                 super.onOperationFailed(e);
-                operationCallback.performOperation(null); //in a failed case, return null to caller so caller can act accordingly
+                operationCallback.performOperation(null);
             }
         });
+    }
+
+    @Override
+    public void updateUser(User user, final OperationCallback operationCallBack) {
+        cloudService.updateUser(user, new OperationCallback<BackendlessUser>() {
+            @Override
+            public void performOperation(BackendlessUser arg) {
+                operationCallBack.performOperation(constructUserFromBackendless(arg));
+            }
+
+            @Override
+            public void onOperationFailed(Throwable e) {
+                operationCallBack.onOperationFailed(e);
+            }
+        });
+    }
+
+    @Override
+    public void checkPhoneExists(String phone, final OperationCallback operationCallback) {
+
+        cloudService.findItemsByFieldName(LocalConstants.PHONE, phone, User.class, new OperationCallback<User>() {
+            @Override
+            public void performOperation(User arg) {
+                super.performOperation(arg);
+            }
+
+            @Override
+            public void onOperationFailed(Throwable e) {
+                super.onOperationFailed(e);
+                operationCallback.performOperation(null); // return null to caller signifying phone nonexistent
+            }
+        });
+    }
+
+    @Override
+    public void verifyConfirmed(String deviceId, final OperationCallback operationCallBack) {
+
+        cloudService.findItemsByFieldName(LocalConstants.DEVICE_ID, deviceId, BackendlessUser.class, new OperationCallback<BackendlessUser>() {
+            @Override
+            public void performOperation(BackendlessUser arg) {
+                operationCallBack.performOperation(arg.getProperty(LocalConstants.IS_CONFIRMED));
+            }
+        });
+    }
+
+//    @Override
+//    public void getUserId(String deviceId, final OperationCallback operationCallback) {
+//        cloudService.findUserByField(LocalConstants.DEVICE_ID, deviceId, new OperationCallback() {
+//            @Override
+//            public <T> void performOperation(T arg) {
+//                BackendlessUser backendlessUser = (BackendlessUser)arg;
+//                operationCallback.performOperation(backendlessUser.getProperty(LocalConstants.OBJECT_ID));
+//            }
+//
+//            @Override
+//            public void onOperationFailed(Throwable e) {
+//                super.onOperationFailed(e);
+//                operationCallback.performOperation(null); //in a failed case, return null to caller so caller can act accordingly
+//            }
+//        });
+//    }
+
+    private User constructUserFromBackendless(BackendlessUser backendlessUser) {
+        User user = null;
+
+        if (backendlessUser != null) {
+            String objectId = backendlessUser.getProperty(LocalConstants.OBJECT_ID).toString();
+            String name = backendlessUser.getProperty(LocalConstants.NAME).toString();
+            String phone = backendlessUser.getProperty(LocalConstants.PHONE).toString();
+            String deviceId = backendlessUser.getProperty(LocalConstants.DEVICE_ID).toString();
+            boolean isConfirmed = Boolean.getBoolean(backendlessUser.getProperty(LocalConstants.IS_CONFIRMED).toString());
+
+            user = new User(name, null, phone, deviceId, isConfirmed);
+            user.setObjectId(objectId);
+            user.setProperties(backendlessUser.getProperties());
+
+        }
+
+        return user;
     }
 
     private static class LocalConstants{
         public static final String PHONE = "phone";
         public static final String IS_CONFIRMED = "isconfirmed";
         public static final String OBJECT_ID = "objectId";
+        public static final String NAME = "name";
         public static final String DEVICE_ID = "deviceid";
     }
 }

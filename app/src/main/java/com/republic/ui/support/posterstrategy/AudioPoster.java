@@ -23,10 +23,10 @@ public class AudioPoster implements Poster {
 
     @Override
     public void post(final Context context, final Corruption corruption, final AccessToken accessToken) {
-        postAudioFileToSoundCloud(context, corruption.getMediaFilePath(), new OperationCallback() {
+        postAudioFileToSoundCloud(context, corruption.getMediaFilePath(), new OperationCallback<String>() {
 
             @Override
-            public <T> void performOperation(T audioLink) {
+            public void performOperation( String audioLink) {
                 Bundle params = new Bundle();
                 params.putString("message", audioLink + "\n" + corruption.getDescription());
                 GraphRequest request = new GraphRequest(accessToken,

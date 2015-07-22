@@ -1,20 +1,46 @@
 package com.republic.cloudbaas;
 
+import com.backendless.BackendlessUser;
 import com.republic.entities.User;
 import com.republic.support.OperationCallback;
 
 /**
- * Created by Akwasi Owusu on 7/18/15.
+ * Created by Akwasi Owusu on 7/21/15.
  */
-public interface CloudService {
+ public interface CloudService {
 
-    public <T> void initialize(T dataContext);
+     <T> void addDataItem(T dataItem, Class<T> itemClass,  OperationCallback<T> operationCallBack);
 
-    void addUser(User user, OperationCallback callback);
+    <T> void initialize(T dataContext);
 
-    void loginUser(String userId, String password, OperationCallback operationCallback);
+     <T> void addDataItemSync(T dataItem, Class<T> itemClass);
 
-    void findUserByField(String fieldName, String searchValue, OperationCallback operationCallback);
+     <T> void updateDataItem(T dataItem, Class<T> itemClass,  OperationCallback<T> operationCallBack);
+
+     <T> void deleteDataItem(T dataItem, Class<T> itemClass,  OperationCallback<T> operationCallBack);
+
+     <T> void findItemById(int itemId, Class<T> itemClass,  OperationCallback<T> operationCallBack) ;
+
+     <T> void findItemByFieldName(String fieldName, String searchValue,
+                                        Class<T> itemClass, OperationCallback<T> operationCallBack);
+
+     <T> void findAllItems(Class<T> itemClass,  OperationCallback<T> operationCallBack) ;
+
+     <T> void getLastInsertedItem(Class<T> itemClass,  OperationCallback<T> operationCallBack);
+
+     <T> void findItemsByFieldName(String fieldName, String searchValue,
+                                         Class<T> itemClass, OperationCallback<T> operationCallBack) ;
+
+     <T> void findItemsByWhereClause(String whereClause,
+                                           Class<T> itemClass, OperationCallback<T> operationCallBack) ;
+
+     <T, E> void findItemsBetween(String fieldName, E lowerBound,
+                                        E upperBound, Class<T> itemClass,  OperationCallback<T> operationCallBack) ;
+
+     void addUser(User user, OperationCallback<BackendlessUser> operationCallBack) ;
+
+     void updateUser(User user, OperationCallback<BackendlessUser> operationCallBack) ;
+     void login(String userId, String password, OperationCallback<BackendlessUser> operationCallBack) ;
 
     String getUserToken();
 }
