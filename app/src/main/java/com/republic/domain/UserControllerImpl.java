@@ -19,13 +19,20 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
-    public void createUser(String name, String phone, String password, String deviceId, OperationCallback<User> operationCallBack) {
+    public void createUser(String name, String phone, String password, String deviceId, final OperationCallback<User> operationCallBack) {
         User user = new User(name, password, phone, deviceId, false);
         RepublicFactory.getSession().setUser(user);
         cloudService.addUser(user, new OperationCallback<BackendlessUser>() {
             @Override
             public void performOperation(BackendlessUser arg) {
-                super.performOperation(arg);
+                operationCallBack.performOperation(constructUserFromBackendless(arg));
+            }
+
+            @Override
+            public void onOperationFailed(Throwable e) {
+                super.onOperationFailed(e);
+                User user = null;
+                operationCallBack.performOperation(user);
             }
         });
     }
@@ -36,7 +43,7 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
-    public void login(String userId, String password, final OperationCallback operationCallback) {
+    public void login(String userId, String password, final OperationCallback<User> operationCallback) {
 
         cloudService.login(userId, password, new OperationCallback<BackendlessUser>() {
             @Override
@@ -49,7 +56,8 @@ public class UserControllerImpl implements UserController {
             @Override
             public void onOperationFailed(Throwable e) {
                 super.onOperationFailed(e);
-                operationCallback.performOperation(null);
+                User user = null;
+                operationCallback.performOperation(user);
             }
         });
     }
@@ -70,7 +78,7 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
-    public void checkPhoneExists(String phone, final OperationCallback operationCallback) {
+    public void checkPhoneExists(String phone, final OperationCallback<User> operationCallback) {
 
         cloudService.findItemsByFieldName(LocalConstants.PHONE, phone, User.class, new OperationCallback<User>() {
             @Override
@@ -81,18 +89,8 @@ public class UserControllerImpl implements UserController {
             @Override
             public void onOperationFailed(Throwable e) {
                 super.onOperationFailed(e);
-                operationCallback.performOperation(null); // return null to caller signifying phone nonexistent
-            }
-        });
-    }
-
-    @Override
-    public void verifyConfirmed(String deviceId, final OperationCallback operationCallBack) {
-
-        cloudService.findItemsByFieldName(LocalConstants.DEVICE_ID, deviceId, BackendlessUser.class, new OperationCallback<BackendlessUser>() {
-            @Override
-            public void performOperation(BackendlessUser arg) {
-                operationCallBack.performOperation(arg.getProperty(LocalConstants.IS_CONFIRMED));
+                User user = null;
+                operationCallback.performOperation(user); // return null to caller signifying phone nonexistent
             }
         });
     }

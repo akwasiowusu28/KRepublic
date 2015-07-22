@@ -79,7 +79,6 @@ public class IncidentDetail extends Fragment {
                 userId = arg.getUserId();
             }
         });
-
     }
 
     private void setupButtons() {

@@ -24,7 +24,7 @@ public class SignUpActivity extends AppCompatActivity {
     private String phoneNumber;
     private ProgressDialog progressDialog;
     private Context context;
-
+    private boolean phoneCheckAlreadyMade = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,18 +49,21 @@ public class SignUpActivity extends AppCompatActivity {
 
         phoneNumber = ((EditText) findViewById(R.id.phoneNumber)).getText().toString();
 
-        userController.checkPhoneExists(phoneNumber, new OperationCallback<User>() {
+        if(!phoneCheckAlreadyMade) {
+            userController.checkPhoneExists(phoneNumber, new OperationCallback<User>() {
 
-            @Override
-            public void performOperation(User arg) {
-                if (arg == null) {
-                    performCreateAccount();
-                } else {
-                    Utils.makeToast(context, R.string.accountExistForPhone);
-                    dismissProgressDialog();
+                @Override
+                public void performOperation(User arg) {
+                    if (arg == null) {
+                        performCreateAccount();
+                        phoneCheckAlreadyMade = true;
+                    } else {
+                        Utils.makeToast(context, R.string.accountExistForPhone);
+                        dismissProgressDialog();
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
 
