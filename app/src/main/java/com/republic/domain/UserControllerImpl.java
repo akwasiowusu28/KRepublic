@@ -31,8 +31,8 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
-    public void findUser(String deviceId, final OperationCallback operationCallback) {
-       cloudService.findItemsByFieldName(LocalConstants.DEVICE_ID, deviceId, User.class, operationCallback);
+    public void findUser(String deviceId, OperationCallback<User> operationCallback) {
+       cloudService.findItemByFieldName(LocalConstants.DEVICE_ID, deviceId, User.class, operationCallback);
     }
 
     @Override
@@ -97,23 +97,6 @@ public class UserControllerImpl implements UserController {
         });
     }
 
-//    @Override
-//    public void getUserId(String deviceId, final OperationCallback operationCallback) {
-//        cloudService.findUserByField(LocalConstants.DEVICE_ID, deviceId, new OperationCallback() {
-//            @Override
-//            public <T> void performOperation(T arg) {
-//                BackendlessUser backendlessUser = (BackendlessUser)arg;
-//                operationCallback.performOperation(backendlessUser.getProperty(LocalConstants.OBJECT_ID));
-//            }
-//
-//            @Override
-//            public void onOperationFailed(Throwable e) {
-//                super.onOperationFailed(e);
-//                operationCallback.performOperation(null); //in a failed case, return null to caller so caller can act accordingly
-//            }
-//        });
-//    }
-
     private User constructUserFromBackendless(BackendlessUser backendlessUser) {
         User user = null;
 
@@ -129,7 +112,6 @@ public class UserControllerImpl implements UserController {
             user.setProperties(backendlessUser.getProperties());
 
         }
-
         return user;
     }
 

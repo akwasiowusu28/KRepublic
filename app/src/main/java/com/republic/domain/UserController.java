@@ -18,6 +18,4 @@ public interface UserController {
     void checkPhoneExists(String phone, OperationCallback<User> operationCallback);
 
     void verifyConfirmed(String deviceId, OperationCallback<User> operationCallBack);
-
-  //  void getUserId(String deviceId, final OperationCallback operationCallback);
 }
