@@ -23,6 +23,7 @@ public class User extends BackendlessUser {
         this.name = name;
         this.deviceId = deviceId;
         this.phone = phone;
+        this.isConfirmed = isConfirmed;
 
         setProperty(LocalConstants.NAME, name);
         setProperty(LocalConstants.PASSWORD, password);

@@ -120,18 +120,17 @@ public class Utils {
     }
 
     public static String getNarrative(Context context, Corruption corruption){
-        Context c = context.getApplicationContext();
         String token = readFromPref(context, Constants.USER_TOKEN);
 
         String citizenId = token.substring(token.length() - 5);
         String citizen = "Citizen " + citizenId;
-        String narrative = citizen + " says: \n" + c.getString(R.string.opening_line) + " ";
+        String narrative = citizen + " says: \n\n" + context.getString(R.string.opening_line) + " ";
         narrative += corruption.getCorruptionType().toString() + " ";
-        narrative += c.getString(R.string.at) + " " + corruption.getLocation() + "\n\n";
-        narrative += c.getString(R.string.incident_description) + ":\n\n";
+        narrative += context.getString(R.string.at).toLowerCase() + " " + corruption.getLocation() + ".\n\n";
+        narrative += context.getString(R.string.incident_description) + ":\n\n";
         narrative += corruption.getDescription() + "\n\n";
-        narrative += "This " + corruption.getMediaType().toString().toLowerCase() + " " + c.getString(R.string.this_is_evidence) + "\n \n";
-        narrative += c.getString(R.string.honor_code);
+        narrative += "This " + corruption.getMediaType().toString().toLowerCase() + " " + context.getString(R.string.this_is_evidence) + "\n \n";
+        narrative += context.getString(R.string.honor_code);
 
         return narrative;
     }

@@ -1,5 +1,6 @@
 package com.republic.ui.support.posterstrategy;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -8,6 +9,7 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
 import com.republic.entities.Corruption;
+import com.republic.support.OperationCallback;
 import com.republic.ui.R;
 import com.republic.ui.support.Utils;
 
@@ -20,7 +22,7 @@ import java.io.File;
 public class VideoPoster implements Poster {
 
     @Override
-    public void post(final Context context, final Corruption corruption, final AccessToken accessToken) {
+    public void post(final Context context, final Corruption corruption, final AccessToken accessToken, final OperationCallback<Integer> callback) {
         File file = new File(corruption.getMediaFilePath());
 
         Bundle params = new Bundle();
@@ -31,10 +33,10 @@ public class VideoPoster implements Poster {
                 Utils.Constants.PAGE_VIDEOS, params, HttpMethod.POST, new GraphRequest.Callback() {
             @Override
             public void onCompleted(GraphResponse graphResponse) {
-                if (graphResponse.getError() != null) {
-                    Utils.makeToast(context, R.string.failed);
+                if (graphResponse.getError() == null) {
+                    callback.performOperation(R.string.success);
                 } else {
-                    Utils.makeToast(context, R.string.success);
+                    callback.performOperation(R.string.failed);
                 }
             }
         });

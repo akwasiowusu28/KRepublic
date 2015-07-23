@@ -1,5 +1,6 @@
 package com.republic.ui.support.posterstrategy;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -22,7 +23,7 @@ import de.voidplus.soundcloud.Track;
 public class AudioPoster implements Poster {
 
     @Override
-    public void post(final Context context, final Corruption corruption, final AccessToken accessToken) {
+    public void post(final Context context, final Corruption corruption, final AccessToken accessToken, final OperationCallback<Integer> callback) {
         postAudioFileToSoundCloud(context, corruption.getMediaFilePath(), new OperationCallback<String>() {
 
             @Override
@@ -33,10 +34,10 @@ public class AudioPoster implements Poster {
                         Utils.Constants.PAGE_FEED, params, HttpMethod.POST, new GraphRequest.Callback() {
                     @Override
                     public void onCompleted(GraphResponse graphResponse) {
-                        if (graphResponse.getError() != null) {
-                            Utils.makeToast(context, R.string.failed);
+                        if (graphResponse.getError() == null) {
+                            callback.performOperation(R.string.success);
                         } else {
-                            Utils.makeToast(context, R.string.success);
+                            callback.performOperation(R.string.failed);
                         }
                     }
                 });

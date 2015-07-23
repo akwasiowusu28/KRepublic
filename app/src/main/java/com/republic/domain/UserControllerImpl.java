@@ -31,15 +31,28 @@ public class UserControllerImpl implements UserController {
             @Override
             public void onOperationFailed(Throwable e) {
                 super.onOperationFailed(e);
-                User user = null;
-                operationCallBack.performOperation(user);
+                operationCallBack.performOperation((User)null);
             }
         });
     }
 
     @Override
-    public void findUser(String deviceId, OperationCallback<User> operationCallback) {
-       cloudService.findItemByFieldName(LocalConstants.DEVICE_ID, deviceId, User.class, operationCallback);
+    public void findUser(String deviceId, final OperationCallback<User> operationCallback) {
+        cloudService.findItemByFieldName(LocalConstants.DEVICE_ID, deviceId, BackendlessUser.class,
+                new OperationCallback<BackendlessUser>() {
+            @Override
+            public void performOperation(BackendlessUser arg) {
+                User user = constructUserFromBackendless(arg);
+                RepublicFactory.getSession().setUser(user);
+                operationCallback.performOperation(user);
+            }
+
+            @Override
+            public void onOperationFailed(Throwable e) {
+                super.onOperationFailed(e);
+                operationCallback.performOperation((User)null);
+            }
+        });
     }
 
     @Override
@@ -56,8 +69,7 @@ public class UserControllerImpl implements UserController {
             @Override
             public void onOperationFailed(Throwable e) {
                 super.onOperationFailed(e);
-                User user = null;
-                operationCallback.performOperation(user);
+                operationCallback.performOperation((User)null);
             }
         });
     }
@@ -89,8 +101,7 @@ public class UserControllerImpl implements UserController {
             @Override
             public void onOperationFailed(Throwable e) {
                 super.onOperationFailed(e);
-                User user = null;
-                operationCallback.performOperation(user); // return null to caller signifying phone nonexistent
+                operationCallback.performOperation((User)null); // return null to caller signifying phone nonexistent
             }
         });
     }
@@ -103,7 +114,7 @@ public class UserControllerImpl implements UserController {
             String name = backendlessUser.getProperty(LocalConstants.NAME).toString();
             String phone = backendlessUser.getProperty(LocalConstants.PHONE).toString();
             String deviceId = backendlessUser.getProperty(LocalConstants.DEVICE_ID).toString();
-            boolean isConfirmed = Boolean.getBoolean(backendlessUser.getProperty(LocalConstants.IS_CONFIRMED).toString());
+            boolean isConfirmed = Boolean.parseBoolean(backendlessUser.getProperty(LocalConstants.IS_CONFIRMED).toString());
 
             user = new User(name, null, phone, deviceId, isConfirmed);
             user.setObjectId(objectId);

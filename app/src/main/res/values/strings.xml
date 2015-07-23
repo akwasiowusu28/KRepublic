@@ -30,7 +30,7 @@
     <string name="favoritismdescription">Unfair advantage given to relatives or supporters</string>
     <string name="facebook_app_id">799290236855997</string>
     <string name="title_activity_incident_detail">IncidentDetail</string>
-    <string name="opening_line">For the love of God, my country and myself, I\'d like to report a case of: </string>
+    <string name="opening_line">For the love of God, my country and myself, I\'d like to report a case of </string>
     <string name="at">At</string>
     <string name="location_hint">City, town, institution, office, etc.</string>
     <string name="incident_description">So here is what happened</string>
@@ -42,8 +42,8 @@
     <string name="photo">Photo</string>
     <string name="hello_world">Hello world!</string>
     <string name="submit">Submit</string>
-    <string name="success">Media successfully uploaded!</string>
-    <string name="failed">Media upload failed :-(</string>
+    <string name="success">Thanks for making the world better than it was moments ago. Visit the Kwansema Republic page on Facebook to view this and others</string>
+    <string name="failed">Report posting failed</string>
     <string name="soundcloud_client_id">a6897d305d66d516be42c568de29a95c</string>
     <string name="soundcloud_client_secret">afa997bbe96d2a114db9b17a4c0c5f2a</string>
     <string name="soundcloud_pword">kwansema\'smysteries</string>
@@ -78,4 +78,5 @@
     <string name="cancel">Cancel</string>
     <string name="confirmation_failed">Confirmation failed. Please try again</string>
     <string name="this_is_evidence"> is my evidence</string>
+    <string name="posting">Posting report...</string>
 </resources>
