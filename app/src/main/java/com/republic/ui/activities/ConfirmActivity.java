@@ -48,7 +48,6 @@ public class ConfirmActivity extends AppCompatActivity {
         confirmTextField = (EditText) findViewById(R.id.confirmTextField);
         confirmLabel = (TextView) findViewById(R.id.confirmLabel);
         sendCodeButton = (Button) findViewById(R.id.sendConfirmCode);
-        user  = RepublicFactory.getSession().getCurrentUser();
 
     }
 
@@ -93,7 +92,10 @@ public class ConfirmActivity extends AppCompatActivity {
 
                     @Override
                     public void yesButtonOperation() {
+                        user  = RepublicFactory.getSession().getCurrentUser();
+
                         sendConfirmSMS();
+
                         if (confirmFieldsDisabled) {
                             changeConfirmFieldsVisibility(true);
                             sendCodeButton.setVisibility(View.GONE);
@@ -137,9 +139,11 @@ public class ConfirmActivity extends AppCompatActivity {
 
     private void sendConfirmSMS() {
         generateConfirmCode();
-        String phoneNumber = user.getPhone();
-        SmsManager manager = SmsManager.getDefault();
-        manager.sendTextMessage(phoneNumber, null, getConfirmMessage(), null, null);
+        String phoneNumber = user != null ? user.getPhone() : Utils.readFromPref(this, Utils.Constants.PHONE);
+        if(! Utils.isEmptyString(phoneNumber)) {
+            SmsManager manager = SmsManager.getDefault();
+            manager.sendTextMessage(phoneNumber, null, getConfirmMessage(), null, null);
+        }
     }
 
     private String getConfirmMessage() {

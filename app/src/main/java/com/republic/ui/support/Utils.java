@@ -11,6 +11,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.republic.entities.Corruption;
+import com.republic.ui.R;
+
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -114,6 +117,22 @@ public class Utils {
     public static String readFromPref(Context context, String key){
         SharedPreferences sharedPreference = context.getSharedPreferences(Constants.PREF_FILE, Context.MODE_PRIVATE);
         return sharedPreference.getString(key,Constants.EMPTY_STRING);
+    }
 
+    public static String getNarrative(Context context, Corruption corruption){
+        Context c = context.getApplicationContext();
+        String token = readFromPref(context, Constants.USER_TOKEN);
+
+        String citizenId = token.substring(token.length() - 5);
+        String citizen = "Citizen " + citizenId;
+        String narrative = citizen + " says: \n" + c.getString(R.string.opening_line) + " ";
+        narrative += corruption.getCorruptionType().toString() + " ";
+        narrative += c.getString(R.string.at) + " " + corruption.getLocation() + "\n\n";
+        narrative += c.getString(R.string.incident_description) + ":\n\n";
+        narrative += corruption.getDescription() + "\n\n";
+        narrative += "This " + corruption.getMediaType().toString().toLowerCase() + " " + c.getString(R.string.this_is_evidence) + "\n \n";
+        narrative += c.getString(R.string.honor_code);
+
+        return narrative;
     }
 }

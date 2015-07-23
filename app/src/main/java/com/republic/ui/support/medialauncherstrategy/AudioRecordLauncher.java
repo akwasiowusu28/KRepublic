@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 
 import com.republic.ui.R;
+import com.republic.ui.support.Logger;
 import com.republic.ui.support.Utils;
 
 import java.io.File;
@@ -83,7 +84,7 @@ public class AudioRecordLauncher implements Launcher{
         try {
             audioRecorder.prepare();
         } catch (IOException e) {
-            //TODO: log it
+            Logger.log(AudioRecordLauncher.class, e.getMessage());
         }
     }
 

@@ -20,10 +20,9 @@ import com.republic.domain.UserController;
 import com.republic.entities.Corruption;
 import com.republic.entities.CorruptionType;
 import com.republic.entities.MediaType;
-import com.republic.entities.User;
-import com.republic.support.OperationCallback;
 import com.republic.support.RepublicFactory;
 import com.republic.ui.R;
+import com.republic.ui.support.Logger;
 import com.republic.ui.support.Utils;
 import com.republic.ui.support.medialauncherstrategy.AudioRecordLauncher;
 import com.republic.ui.support.medialauncherstrategy.CamcorderLauncher;
@@ -45,6 +44,9 @@ public class IncidentDetail extends Fragment {
         return fragment;
     }
 
+    private class LocalConstants{
+        public static final String USER_NULL = "User id is null";
+    }
     private String audioFileName;
     private String photoFileName;
     String videoFileName;
@@ -73,12 +75,7 @@ public class IncidentDetail extends Fragment {
         context = getActivity();
         audioRecordLauncher = new AudioRecordLauncher(this);
         userController = RepublicFactory.getUserController();
-        userController.findUser(Utils.getDeviceId(context), new OperationCallback<User>() {
-            @Override
-            public void performOperation(User arg) {
-                userId = arg.getUserId();
-            }
-        });
+        userId = Utils.readFromPref(context, Utils.Constants.USER_TOKEN);
     }
 
     private void setupButtons() {
@@ -172,9 +169,13 @@ public class IncidentDetail extends Fragment {
                 String description = ((EditText) view.findViewById(R.id.incidentDescription)).getText().toString();
                 corruption.setLocation(location);
                 corruption.setDescription(description);
+                corruption.setMediaType(selectedMediaType);
             }
             corruption.setCorruptionType(getSelectedCorruptionType());
             corruption.setOwnerId(userId);
+        }
+        else{
+            Logger.log(this.getClass(), LocalConstants.USER_NULL);
         }
         return corruption;
     }

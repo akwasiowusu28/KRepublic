@@ -30,7 +30,7 @@
     <string name="favoritismdescription">Unfair advantage given to relatives or supporters</string>
     <string name="facebook_app_id">799290236855997</string>
     <string name="title_activity_incident_detail">IncidentDetail</string>
-    <string name="opening_line">For the love of God, my country and myself, I\'d like to report a case of:</string>
+    <string name="opening_line">For the love of God, my country and myself, I\'d like to report a case of: </string>
     <string name="at">At</string>
     <string name="location_hint">City, town, institution, office, etc.</string>
     <string name="incident_description">So here is what happened</string>
@@ -77,4 +77,5 @@
     <string name="no">No</string>
     <string name="cancel">Cancel</string>
     <string name="confirmation_failed">Confirmation failed. Please try again</string>
+    <string name="this_is_evidence"> is my evidence</string>
 </resources>

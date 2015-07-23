@@ -40,7 +40,7 @@ public class User extends BackendlessUser {
         this.objectId = objectId;
     }
 
-    public boolean isConfirmed() {
+    public boolean getIsConfirmed() {
         return isConfirmed;
     }
 

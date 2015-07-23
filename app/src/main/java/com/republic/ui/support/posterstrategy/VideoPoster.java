@@ -24,7 +24,7 @@ public class VideoPoster implements Poster {
         File file = new File(corruption.getMediaFilePath());
 
         Bundle params = new Bundle();
-        params.putString("description", corruption.getDescription());
+        params.putString("description", Utils.getNarrative(context, corruption));
         params.putByteArray(corruption.getMediaFilePath(), Utils.convertFileToBytes(file));
 
         GraphRequest request = new GraphRequest(accessToken,

@@ -67,11 +67,14 @@ public class LoginActivity extends Activity {
                 }
                 else {
                     //write the user id to phone so we can perform all subsequent cloud requests with that
+                    Utils.writeToPref(context, Utils.Constants.PHONE, phone);
                     Utils.writeToPref(context, Utils.Constants.USER_TOKEN, user.getObjectId());
-                    Intent intent = new Intent(context, user.isConfirmed() ? MainActivity.class : ConfirmActivity.class);
+                    Utils.writeToPref(context, Utils.Constants.USER_CONFIRMED, String.valueOf(user.getIsConfirmed()));
+                    Intent intent = new Intent(context, user.getIsConfirmed() ? MainActivity.class : ConfirmActivity.class);
                     startActivity(intent);
                 }
             }
+
         });
     }
 

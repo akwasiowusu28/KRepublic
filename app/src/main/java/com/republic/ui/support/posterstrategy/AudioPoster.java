@@ -28,7 +28,7 @@ public class AudioPoster implements Poster {
             @Override
             public void performOperation( String audioLink) {
                 Bundle params = new Bundle();
-                params.putString("message", audioLink + "\n" + corruption.getDescription());
+                params.putString("message", audioLink + "\n" + Utils.getNarrative(context, corruption));
                 GraphRequest request = new GraphRequest(accessToken,
                         Utils.Constants.PAGE_FEED, params, HttpMethod.POST, new GraphRequest.Callback() {
                     @Override
@@ -44,7 +44,6 @@ public class AudioPoster implements Poster {
                 request.executeAsync();
 
             }
-
         });
     }
 

@@ -1,5 +1,7 @@
 package com.republic.support;
 
+import com.republic.ui.support.Logger;
+
 import java.util.List;
 
 /** *
@@ -12,6 +14,6 @@ public abstract class OperationCallback<T> {
     public void performOperation(List<T> arg){}
 
     public void onOperationFailed(Throwable e){
-        //TODO log it
+        Logger.log(OperationCallback.class, e.getMessage());
     }
 }

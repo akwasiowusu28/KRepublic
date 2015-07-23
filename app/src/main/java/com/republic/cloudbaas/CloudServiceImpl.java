@@ -31,7 +31,7 @@ public class CloudServiceImpl implements CloudService {
     public <T> void addDataItem(T dataItem, Class<T> itemClass,  OperationCallback<T> operationCallBack) {
 
             Backendless.Persistence.of(itemClass).save(dataItem,
-                    new BackendAsynCallBack<>(operationCallBack));
+                    new BackendAsynCallBack<>(operationCallBack, itemClass));
 
     }
 
@@ -68,7 +68,7 @@ public class CloudServiceImpl implements CloudService {
             Backendless.Persistence
                     .of(itemClass)
                     .find(query,
-                            (AsyncCallback<BackendlessCollection<T>>) new BackendAsynCallBack<>(operationCallBack));
+                            (AsyncCallback<BackendlessCollection<T>>) new BackendAsynCallBack<>(operationCallBack, itemClass));
 
     }
 
@@ -88,13 +88,13 @@ public class CloudServiceImpl implements CloudService {
             Backendless.Persistence
                     .of(itemClass)
                     .find(query, (AsyncCallback<BackendlessCollection<T>>) new BackendAsynCallBack<>(
-                            operationCallBack));
+                            operationCallBack, itemClass));
     }
 
     public <T> void getLastInsertedItem(Class<T> itemClass,  OperationCallback<T> operationCallBack) {
 
             Backendless.Persistence.of(itemClass).findLast(
-                    new BackendAsynCallBack<>(operationCallBack));
+                    new BackendAsynCallBack<>(operationCallBack, itemClass));
 
     }
 
@@ -108,7 +108,7 @@ public class CloudServiceImpl implements CloudService {
                     .of(itemClass)
                     .find(query,
                             (AsyncCallback<BackendlessCollection<T>>) new BackendAsynCallBack<>(
-                                    operationCallBack));
+                                    operationCallBack, itemClass));
     }
 
     public <T> void findItemsByWhereClause(String whereClause,
@@ -120,7 +120,7 @@ public class CloudServiceImpl implements CloudService {
                     .of(itemClass)
                     .find(query,
                             (AsyncCallback<BackendlessCollection<T>>) new BackendAsynCallBack<>(
-                                    operationCallBack));
+                                    operationCallBack, itemClass));
 
     }
 
@@ -149,7 +149,7 @@ public class CloudServiceImpl implements CloudService {
                     .of(itemClass)
                     .find(query,
                             (AsyncCallback<BackendlessCollection<T>>) new BackendAsynCallBack<>(
-                                    operationCallBack));
+                                    operationCallBack, itemClass));
 
     }
 
@@ -157,17 +157,17 @@ public class CloudServiceImpl implements CloudService {
 
         BackendlessUser backendlessUser = (BackendlessUser) user;
         Backendless.UserService.register(backendlessUser,
-                new BackendAsynCallBack<>(operationCallBack));
+                new BackendAsynCallBack<>(operationCallBack, BackendlessUser.class));
     }
 
     public void updateUser(User user, OperationCallback<BackendlessUser> operationCallBack) {
-        Backendless.UserService.update(user, new BackendAsynCallBack<>(operationCallBack));
+        Backendless.UserService.update(user, new BackendAsynCallBack<>(operationCallBack, BackendlessUser.class));
     }
 
     public void login(String userId, String password, OperationCallback<BackendlessUser> operationCallBack) {
 
         Backendless.UserService.login(userId, password,
-                new BackendAsynCallBack<>(operationCallBack));
+                new BackendAsynCallBack<>(operationCallBack, BackendlessUser.class));
 
     }
 
@@ -191,16 +191,18 @@ public class CloudServiceImpl implements CloudService {
     private class BackendAsynCallBack<T> implements AsyncCallback<T> {
 
         private final OperationCallback<T> operationCallBack;
+        private Class<T> itemClass;
 
-        public BackendAsynCallBack (OperationCallback<T> operationCallBack) {
+        public BackendAsynCallBack(OperationCallback<T> operationCallBack, Class<T> itemClass) {
             this.operationCallBack = operationCallBack;
+            this.itemClass = itemClass;
         }
 
         @Override
         public void handleFault(BackendlessFault fault) {
             if (operationCallBack != null) {
                 operationCallBack.onOperationFailed(new CloudRequestFailedException(
-                        fault.getMessage()));
+                        fault.getMessage() + " for class: " + itemClass.getSimpleName()));
             }
         }
 

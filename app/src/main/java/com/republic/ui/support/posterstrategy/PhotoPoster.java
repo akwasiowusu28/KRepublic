@@ -21,7 +21,7 @@ public class PhotoPoster implements Poster{
     public void post(final Context context, final Corruption corruption, final AccessToken accessToken) {
         File file = new File(corruption.getMediaFilePath());
         Bundle params = new Bundle();
-        params.putString("caption", corruption.getDescription());
+        params.putString("caption", Utils.getNarrative(context, corruption));
         params.putByteArray(corruption.getMediaFilePath(), Utils.convertFileToBytes(file));
 
         GraphRequest request = new GraphRequest(accessToken,

@@ -63,7 +63,7 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
-    public void updateUser(User user, final OperationCallback operationCallBack) {
+    public void updateUser(User user, final OperationCallback<User> operationCallBack) {
         cloudService.updateUser(user, new OperationCallback<BackendlessUser>() {
             @Override
             public void performOperation(BackendlessUser arg) {
