@@ -1,8 +1,13 @@
 package com.republic.entities;
 
+import java.util.Date;
+
+import weborb.service.ExcludeProperty;
+
 /** *
  * Created by Akwasi Owusu on 7/17/15.
  */
+@ExcludeProperty(propertyName = "mediaFilePath")
 public class Corruption {
 
     private CorruptionType corruptionType;
@@ -12,6 +17,15 @@ public class Corruption {
     private String postId;
     private MediaType mediaType;
     private String ownerId;
+    private Date postDate;
+
+    public Date getPostDate() {
+        return postDate;
+    }
+
+    public void setPostDate(Date postDate) {
+        this.postDate = postDate;
+    }
 
     public CorruptionType getCorruptionType() {
         return corruptionType;

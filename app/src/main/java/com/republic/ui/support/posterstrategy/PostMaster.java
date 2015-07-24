@@ -6,8 +6,10 @@ import android.os.AsyncTask;
 
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenSource;
+import com.republic.domain.Domain;
 import com.republic.entities.Corruption;
 import com.republic.support.OperationCallback;
+import com.republic.support.RepublicFactory;
 import com.republic.ui.R;
 import com.republic.ui.support.Utils;
 
@@ -20,11 +22,14 @@ public class PostMaster {
     private Poster poster;
     private Context context;
     private ProgressDialog progressDialog;
+    private Domain domain;
 
     public PostMaster(Context context, Poster poster) {
         super();
         this.poster = poster;
         this.context = context;
+
+        domain = RepublicFactory.getDomain();
 
         accessToken = new AccessToken(Utils.Constants.FB_ACCESS_TOKEN,
                 Utils.Constants.FB_APP_ID,
@@ -35,11 +40,12 @@ public class PostMaster {
         setupProgressDialog();
     }
 
-    public void post(Corruption corruption) {
+    public void post(final Corruption corruption) {
         progressDialog.show();
         poster.post(context, corruption, accessToken, new OperationCallback<Integer>() {
             @Override
             public void performOperation(Integer messageStringId) {
+                domain.saveCorruption(corruption);
                 dismissProgressDialog();
                 Utils.makeToast(context.getApplicationContext(), messageStringId);
             }

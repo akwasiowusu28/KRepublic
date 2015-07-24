@@ -11,7 +11,10 @@ import com.facebook.HttpMethod;
 import com.republic.entities.Corruption;
 import com.republic.support.OperationCallback;
 import com.republic.ui.R;
+import com.republic.ui.support.Logger;
 import com.republic.ui.support.Utils;
+
+import org.json.JSONException;
 
 import java.io.File;
 
@@ -34,6 +37,11 @@ public class VideoPoster implements Poster {
             @Override
             public void onCompleted(GraphResponse graphResponse) {
                 if (graphResponse.getError() == null) {
+                    try {
+                        corruption.setPostId(graphResponse.getJSONObject().getString("post_id"));
+                    } catch (JSONException e) {
+                        Logger.log(AudioPoster.class, e.getMessage());
+                    }
                     callback.performOperation(R.string.success);
                 } else {
                     callback.performOperation(R.string.failed);

@@ -42,7 +42,7 @@
     <string name="photo">Photo</string>
     <string name="hello_world">Hello world!</string>
     <string name="submit">Submit</string>
-    <string name="success">Thanks for making the world better than it was moments ago. Visit the Kwansema Republic page on Facebook to view this and others</string>
+    <string name="success">Report successfully posted!</string>
     <string name="failed">Report posting failed</string>
     <string name="soundcloud_client_id">a6897d305d66d516be42c568de29a95c</string>
     <string name="soundcloud_client_secret">afa997bbe96d2a114db9b17a4c0c5f2a</string>
