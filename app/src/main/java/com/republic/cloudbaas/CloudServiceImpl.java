@@ -104,7 +104,7 @@ public class CloudServiceImpl implements CloudService {
             collectionRequestsCount++;
             String whereClause = fieldName + "='" + searchValue + "'";
             BackendlessDataQuery query = new BackendlessDataQuery(whereClause);
-            Backendless.Persistence
+            Backendless.Data
                     .of(itemClass)
                     .find(query,
                             (AsyncCallback<BackendlessCollection<T>>) new BackendAsynCallBack<>(
@@ -210,8 +210,7 @@ public class CloudServiceImpl implements CloudService {
         public void handleResponse(T responseObject) {
             if (operationCallBack != null)
                 if (responseObject instanceof BackendlessCollection) {
-                    List<T> responseData = ((BackendlessCollection<T>) responseObject)
-                            .getData();
+                    List<T> responseData = ((BackendlessCollection<T>) responseObject).getData();
                     if (!isCollectionOperation) {
                         T item = responseData.size() > 0 ? responseData.get(0)
                                 : null;

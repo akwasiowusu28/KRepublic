@@ -45,6 +45,9 @@ public class Utils {
         public static final String USER_CONFIRMED = "User confirmed";
         public static final String USER_TOKEN = "User token";
         public static final String PHONE ="phone";
+        public static final String PAGE_APP_LINK = "fb://page/" + PAGE_PROFILE_ID;
+        public static final String FB_PACKAGE = "com.facebook.katana";
+        public static final String PAGE_WEB_LINK = "https://www.facebook.com/" + PAGE_PROFILE_ID;
     }
 
     private static Drawable defaultEditTextBackground = null;

@@ -1,7 +1,11 @@
 package com.republic.ui.activities;
 
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -15,9 +19,13 @@ import com.republic.entities.User;
 import com.republic.support.OperationCallback;
 import com.republic.support.RepublicFactory;
 import com.republic.ui.R;
+import com.republic.ui.fragments.CasesFragment;
 import com.republic.ui.fragments.NavigationDrawerFragment;
 import com.republic.ui.fragments.ReportFragment;
+import com.republic.ui.support.Logger;
 import com.republic.ui.support.Utils;
+
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity
@@ -58,6 +66,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+
     private void loadUser() {
         final Session session = RepublicFactory.getSession();
         if (session != null && session.getCurrentUser() == null) {
@@ -96,24 +105,50 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
-        // update the main content by replacing fragments
-        getSupportFragmentManager().beginTransaction().replace(R.id.container, ReportFragment.newInstance())
-                .commit();
-    }
-
-    public void onSectionAttached(int number) {
-        switch (number) {
+        switch (position) {
+            case 0:
             case 1:
-                mTitle = getString(R.string.title_section1);
+                setCurrentFragmentTo(ReportFragment.newInstance());
                 break;
             case 2:
-                mTitle = getString(R.string.title_section2);
+                launchFacebookPage();
                 break;
             case 3:
-                mTitle = getString(R.string.title_section3);
+                setCurrentFragmentTo(CasesFragment.newInstance());
                 break;
         }
     }
+
+    private void setCurrentFragmentTo(Fragment fragment) {
+        getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment)
+                .commit();
+    }
+
+    private void launchFacebookPage() {
+        try {
+            String appLink = Utils.Constants.PAGE_APP_LINK;
+            String webLink = Utils.Constants.PAGE_WEB_LINK;
+
+            Intent intent = new Intent(Intent.ACTION_VIEW,
+                    Uri.parse(isFacebookInstalled() ? appLink : webLink));
+            startActivity(intent);
+        } catch (Exception e) {
+            Logger.log(MainActivity.class, e.getMessage());
+        }
+    }
+
+    boolean isFacebookInstalled() {
+        List<ApplicationInfo> apps;
+        PackageManager packageManager = getPackageManager();
+        apps = packageManager.getInstalledApplications(0);
+
+        for (ApplicationInfo app : apps) {
+            if (app.packageName.equals(Utils.Constants.FB_PACKAGE))
+                return app.enabled;
+        }
+        return false;
+    }
+
 
     public void restoreActionBar() {
         ActionBar actionBar = getSupportActionBar();

@@ -19,6 +19,11 @@ public class Corruption {
     private String ownerId;
     private Date postDate;
 
+    public Corruption(){
+        super();
+        postDate = new Date();
+    }
+
     public Date getPostDate() {
         return postDate;
     }

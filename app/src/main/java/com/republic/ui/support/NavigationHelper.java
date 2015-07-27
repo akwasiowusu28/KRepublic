@@ -40,4 +40,11 @@ public class NavigationHelper {
                 R.drawable.extortion, R.drawable.embezzlement, R.drawable.favoritism};
     }
 
+    public static Integer[] getNavDrawerIcons(){
+        return new Integer[]{R.drawable.reportcorruption, R.drawable.republicfb, R.drawable.viewreport, R.drawable.invitefriends};
+    }
+
+    public static Integer[] getNavDrawerItems(){
+        return new Integer[]{R.string.report_corruption, R.string.go_to_page, R.string.view_reports, R.string.invite_friends};
+    }
 }

@@ -5,12 +5,13 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,6 +23,7 @@ import android.widget.ListView;
 
 import com.republic.ui.R;
 import com.republic.ui.adapters.NavDrawerAdapter;
+import com.republic.ui.support.NavigationHelper;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -85,6 +87,7 @@ public class NavigationDrawerFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         // Indicate that this fragment would like to influence the set of actions in the action bar.
         setHasOptionsMenu(true);
+
     }
 
     @Override
@@ -98,10 +101,11 @@ public class NavigationDrawerFragment extends Fragment {
                 selectItem(position);
             }
         });
+        drawerListView.addHeaderView(inflater.inflate(R.layout.drawer_header_layout, drawerListView, false));
         drawerListView.setAdapter(new NavDrawerAdapter(
                 getActionBar().getThemedContext(),
-                android.R.layout.simple_list_item_activated_1));
-        drawerListView.addFooterView(inflater.inflate(R.layout.drawer_header_layout, drawerListView, false));
+                NavigationHelper.getNavDrawerItems(),
+                NavigationHelper.getNavDrawerIcons()));
         drawerListView.setItemChecked(mCurrentSelectedPosition, true);
         return drawerListView;
     }
@@ -133,7 +137,7 @@ public class NavigationDrawerFragment extends Fragment {
         mDrawerToggle = new ActionBarDrawerToggle(
                 getActivity(),                    /* host Activity */
                 mDrawerLayout,                    /* DrawerLayout object */
-                R.drawable.ic_drawer,             /* nav drawer image to replace 'Up' caret */
+                new Toolbar(this.getActivity()),  /* nav drawer image to replace 'Up' caret */
                 R.string.navigation_drawer_open,  /* "open drawer" description for accessibility */
                 R.string.navigation_drawer_close  /* "close drawer" description for accessibility */
         ) {
@@ -268,4 +272,5 @@ public class NavigationDrawerFragment extends Fragment {
          */
         void onNavigationDrawerItemSelected(int position);
     }
+
 }

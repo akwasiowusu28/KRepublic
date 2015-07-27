@@ -1,10 +1,6 @@
 <resources>
     <string name="app_name">K Republic</string>
 
-    <string name="title_section1">Section 1</string>
-    <string name="title_section2">Section 2</string>
-    <string name="title_section3">Section 3</string>
-
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
@@ -78,5 +74,12 @@
     <string name="cancel">Cancel</string>
     <string name="confirmation_failed">Confirmation failed. Please try again</string>
     <string name="this_is_evidence"> is my evidence</string>
-    <string name="posting">Posting report...</string>
+    <string name="posting">Posting report&#8230;</string>
+    <string name="go_to_page">Go to the republic page</string>
+    <string name="view_reports">View your reports"</string>
+    <string name="invite_friends">Invite friends to the republic</string>
+    <string name="report_corruption">Report corruption</string>
+    <string name="view">View</string>
+    <string name="loading">loading&#8230;</string>
+    <string name="reports">Reports</string>
 </resources>

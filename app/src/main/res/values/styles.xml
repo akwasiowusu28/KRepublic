@@ -2,13 +2,16 @@
 
     <style name="kwansemaActionBar"
            parent="@style/Theme.AppCompat.Light.DarkActionBar">
-        <!--<item name="actionBarStyle">@style/MyActionBar</item>-->
+        <item name="actionBarStyle">@style/MyActionBar</item>
     </style>
 
-    <!--<style name="MyActionBar"-->
-           <!--parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">-->
-        <!--<item name="android:background">@android:color/holo_blue_dark</item>-->
-        <!--<item name="background">@android:color/holo_blue_dark</item>-->
-    <!--</style>-->
-
+    <style name="MyActionBar"
+           parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+        <item name="android:background">@drawable/bluegradient</item>
+        <item name="background">@drawable/bluegradient</item>
+    </style>
+    <color name="orange">#F07C00</color>
+    <color name="transparent">#00000000</color>
+    <color name="facebookBlue">#3b5998</color>
+    <color name="mainColor">#FF69B1FF</color>
 </resources>

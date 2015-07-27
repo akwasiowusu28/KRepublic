@@ -18,4 +18,10 @@ public enum CorruptionType {
     private CorruptionType(String type){
         this.type = type;
     }
+
+
+    @Override
+    public String toString() {
+        return type;
+    }
 }

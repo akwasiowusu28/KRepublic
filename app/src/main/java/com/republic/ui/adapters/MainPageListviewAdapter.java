@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.republic.ui.R;
 
-/** *
+/**
  * Created by Akwasi Owusu on 7/6/15.
  */
 public class MainPageListviewAdapter extends ArrayAdapter<Integer> {
@@ -22,8 +22,8 @@ public class MainPageListviewAdapter extends ArrayAdapter<Integer> {
     private Integer[] navigationItemsDesc;
 
     public MainPageListviewAdapter(Context context,
-                                     Integer[] navigationIcons, Integer[] navigationItems,
-                                     Integer[] navigationItemsDesc) {
+                                   Integer[] navigationIcons, Integer[] navigationItems,
+                                   Integer[] navigationItemsDesc) {
         super(context, R.layout.layout_navigation_listview, navigationItems);
         this.context = context;
         resource = R.layout.layout_navigation_listview;
@@ -40,8 +40,7 @@ public class MainPageListviewAdapter extends ArrayAdapter<Integer> {
         View rowView = convertView;
 
         if (rowView == null) {
-            ViewHolder viewHolder = null;
-            viewHolder = new ViewHolder();
+            ViewHolder viewHolder = new ViewHolder();
             rowView = inflater.inflate(resource, parent, false);
 
             viewHolder.firstLinetextView = (TextView) rowView
@@ -56,7 +55,6 @@ public class MainPageListviewAdapter extends ArrayAdapter<Integer> {
 
         ViewHolder viewHolder = (ViewHolder) rowView.getTag();
 
-        setTextColor(viewHolder);
         viewHolder.mainIconImageView
                 .setImageResource(navigationIcons[position]);
 
@@ -66,17 +64,6 @@ public class MainPageListviewAdapter extends ArrayAdapter<Integer> {
                 .getString(navigationItemsDesc[position]));
 
         return rowView;
-    }
-
-    private void setTextColor(ViewHolder viewHolder) {
-        //int color = Utils.getTextColor(context);
-        // viewHolder.firstLinetextView.setTextColor(color);
-       //viewHolder.secondLinetextView.setTextColor(color);
-    }
-
-    private void setViewsEnabled(ViewHolder viewHolder) {
-        viewHolder.firstLinetextView.setEnabled(false);
-        viewHolder.secondLinetextView.setEnabled(false);
     }
 
     private static class ViewHolder {
