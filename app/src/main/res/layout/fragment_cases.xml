@@ -2,20 +2,12 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-              android:orientation="vertical"
              tools:context="com.republic.ui.fragments.CasesFragment">
 
    <ListView
        android:id="@+id/casesList"
        android:layout_width="match_parent"
-       android:layout_height="match_parent" />
-
-    <ProgressBar
-        android:id="@id/android:empty"
-        android:background="@color/facebookBlue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:indeterminate="true"
-        />
+       android:layout_height="match_parent"
+       android:drawSelectorOnTop="true"/>
 
 </LinearLayout>

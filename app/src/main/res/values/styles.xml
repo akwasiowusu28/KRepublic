@@ -13,5 +13,6 @@
     <color name="orange">#F07C00</color>
     <color name="transparent">#00000000</color>
     <color name="facebookBlue">#3b5998</color>
-    <color name="mainColor">#FF69B1FF</color>
+    <color name="skyBlue">#69B1FF</color>
+    <color name="glassyBlue">#3069B1FF</color>
 </resources>
