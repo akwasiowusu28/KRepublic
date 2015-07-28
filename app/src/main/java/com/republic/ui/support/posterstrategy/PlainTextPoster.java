@@ -15,33 +15,28 @@ import com.republic.ui.support.Utils;
 
 import org.json.JSONException;
 
-import java.io.File;
-
-/** *
- * Created by Akwasi Owusu on 7/16/15.
+/**
+ * Created by Akwasi Owusu on 7/27/15.
  */
-public class PhotoPoster implements Poster{
-
+public class PlainTextPoster implements Poster{
     @Override
-    public void post(final Context context, final Corruption corruption, final AccessToken accessToken, final OperationCallback<Integer> callback) {
-        File file = new File(corruption.getMediaFilePath());
+    public void post(Context context, final Corruption corruption, AccessToken accessToken, final OperationCallback<Integer> callback) {
         Bundle params = new Bundle();
-        params.putString(Utils.Constants.CAPTION, Utils.getNarrative(context, corruption));
-        params.putByteArray(corruption.getMediaFilePath(), Utils.convertFileToBytes(file));
-
+        params.putString(Utils.Constants.MESSAGE, Utils.getNarrative(context, corruption));
         GraphRequest request = new GraphRequest(accessToken,
-                Utils.Constants.PAGE_PHOTOS, params, HttpMethod.POST, new GraphRequest.Callback() {
+                Utils.Constants.PAGE_FEED, params, HttpMethod.POST, new GraphRequest.Callback() {
             @Override
             public void onCompleted(GraphResponse graphResponse) {
                 if (graphResponse.getError() == null) {
                     try {
-                        corruption.setPostId(graphResponse.getJSONObject().getString(Utils.Constants.POST_ID));
+                        String post_Id = graphResponse.getJSONObject().getString("id");
+                        corruption.setPostId(post_Id);
                     } catch (JSONException e) {
                         Logger.log(AudioPoster.class, e.getMessage());
                     }
-                  callback.performOperation(R.string.success);
+                    callback.performOperation(R.string.success);
                 } else {
-                   callback.performOperation(R.string.failed);
+                    callback.performOperation(R.string.failed);
                 }
             }
         });

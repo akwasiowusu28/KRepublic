@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/caselistbackground"
+    android:layout_height="60dp"
+    android:background="@drawable/list_background"
     android:orientation="horizontal"
     android:padding="10dp">
 
     <TextView
+        android:layout_gravity="center"
         android:id="@+id/reportDate"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -15,22 +16,13 @@
         android:textColor="@color/skyBlue" />
 
     <TextView
+        android:layout_gravity="center"
         android:id="@+id/description"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="0.5"
+        android:layout_weight="0.7"
         android:ellipsize="marquee"
         android:singleLine="true"
         android:text="@string/hello_world" />
 
-    <Button
-        android:id="@+id/viewButton"
-        android:layout_width="0dp"
-        android:layout_height="35dp"
-        android:layout_weight="0.2"
-        android:background="@drawable/viewcasebackground"
-        android:text="@string/view"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:textColor="@android:color/white" />
 </LinearLayout>

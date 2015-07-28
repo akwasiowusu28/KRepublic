@@ -13,14 +13,13 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
-import com.republic.domain.UserController;
 import com.republic.entities.Corruption;
 import com.republic.entities.CorruptionType;
 import com.republic.entities.MediaType;
-import com.republic.support.RepublicFactory;
 import com.republic.ui.R;
 import com.republic.ui.support.Logger;
 import com.republic.ui.support.Utils;
@@ -31,6 +30,7 @@ import com.republic.ui.support.medialauncherstrategy.LaunchMaster;
 import com.republic.ui.support.medialauncherstrategy.MediaFileSystemLauncher;
 import com.republic.ui.support.posterstrategy.AudioPoster;
 import com.republic.ui.support.posterstrategy.PhotoPoster;
+import com.republic.ui.support.posterstrategy.PlainTextPoster;
 import com.republic.ui.support.posterstrategy.PostMaster;
 import com.republic.ui.support.posterstrategy.Poster;
 import com.republic.ui.support.posterstrategy.VideoPoster;
@@ -44,18 +44,22 @@ public class IncidentDetail extends Fragment {
         return fragment;
     }
 
-    private class LocalConstants{
+    private class LocalConstants {
         public static final String USER_NULL = "User id is null";
+        public static final String CORRUPTION_NULL = "corruption is null";
     }
+
     private String audioFileName;
     private String photoFileName;
     String videoFileName;
     private Context context;
     private AudioRecordLauncher audioRecordLauncher;
-    private MediaType selectedMediaType;
+    private MediaType selectedMediaType = MediaType.NONE;
     private String userId = null;
-    private UserController userController;
-
+    CheckBox honorCheckBox;
+    EditText locationField;
+    EditText descriptionField;
+    private ViewGroup.LayoutParams descriptionLayoutParam = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -74,8 +78,15 @@ public class IncidentDetail extends Fragment {
     private void initializeFields() {
         context = getActivity();
         audioRecordLauncher = new AudioRecordLauncher(this);
-        userController = RepublicFactory.getUserController();
         userId = Utils.readFromPref(context, Utils.Constants.USER_TOKEN);
+        View view = getView();
+        boolean areValid = false;
+        if (view != null) {
+            honorCheckBox = (CheckBox) view.findViewById(R.id.honorCheck);
+            locationField = (EditText) view.findViewById(R.id.location);
+            descriptionField = (EditText) view.findViewById(R.id.incidentDescription);
+            descriptionLayoutParam = descriptionField.getLayoutParams();
+        }
     }
 
     private void setupButtons() {
@@ -133,33 +144,69 @@ public class IncidentDetail extends Fragment {
 
     private void submit() {
 
-        switch (selectedMediaType) {
-            case VIDEO:
-                postCorruption(videoFileName, new VideoPoster());
-                break;
-            case PHOTO:
-                postCorruption(photoFileName, new PhotoPoster());
-                break;
-            case AUDIO:
-                postCorruption(audioFileName, new AudioPoster());
-                break;
+        if (areFieldsValid()) {
+            switch (selectedMediaType) {
+                case VIDEO:
+                    postCorruption(videoFileName, new VideoPoster());
+                    break;
+                case PHOTO:
+                    postCorruption(photoFileName, new PhotoPoster());
+                    break;
+                case AUDIO:
+                    postCorruption(audioFileName, new AudioPoster());
+                    break;
+                default:
+                    postCorruption(Utils.Constants.EMPTY_STRING, new PlainTextPoster());
+                    break;
+            }
         }
+
     }
 
-    private void postCorruption(String fileName, Poster poster){
+    private boolean areFieldsValid() {
+        View view = getView();
+        boolean areValid = false;
+
+        Utils.switchInvalidFieldsBackColor(true, locationField, descriptionField);
+        descriptionField.setLayoutParams(descriptionLayoutParam);
+
+        if (!isAnyEditFieldEmpty(locationField, descriptionField)) {
+            if (honorCheckBox.isChecked()) {
+                areValid = true;
+            } else {
+                Utils.makeToast(context, R.string.checkHonor);
+            }
+        }
+        return areValid;
+    }
+
+    private boolean isAnyEditFieldEmpty(EditText... fields) {
+        boolean isAnyEmpty = false;
+        for (EditText field : fields) {
+            if (field.getText().toString().trim().equals(Utils.Constants.EMPTY_STRING)) {
+                isAnyEmpty = true;
+                Utils.switchInvalidFieldsBackColor(false, field);
+                break;
+            }
+        }
+        return isAnyEmpty;
+    }
+
+    private void postCorruption(String fileName, Poster poster) {
         Corruption corruption = buildCorruptionObject(fileName);
 
-        if(corruption != null){
+        if (corruption != null) {
             new PostMaster(context, poster).post(corruption);
-        }else {
-            // show a message
+            reset();
+        } else {
+            Logger.log(IncidentDetail.class, LocalConstants.CORRUPTION_NULL);
         }
     }
 
     private Corruption buildCorruptionObject(String fileName) {
         Corruption corruption = null;
-        if(userId != null) {
-           corruption = new Corruption();
+        if (userId != null) {
+            corruption = new Corruption();
             corruption.setMediaFilePath(fileName);
 
             View view = getView();
@@ -173,8 +220,7 @@ public class IncidentDetail extends Fragment {
             }
             corruption.setCorruptionType(getSelectedCorruptionType());
             corruption.setOwnerId(userId);
-        }
-        else{
+        } else {
             Logger.log(this.getClass(), LocalConstants.USER_NULL);
         }
         return corruption;
@@ -184,6 +230,11 @@ public class IncidentDetail extends Fragment {
         Bundle args = this.getArguments();
 
         return (CorruptionType) args.getSerializable(Utils.Constants.SELECTED_CORRUPTION_TYPE);
+    }
+
+    private void reset(){
+        selectedMediaType = MediaType.NONE;
+        Utils.clearInputTextFields(locationField, descriptionField);
     }
 
     @Override
@@ -232,6 +283,7 @@ public class IncidentDetail extends Fragment {
 
         return filePath;
     }
+
 
     @Override
     public void onPause() {

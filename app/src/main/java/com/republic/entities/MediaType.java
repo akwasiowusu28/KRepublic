@@ -5,5 +5,5 @@ package com.republic.entities;
  */
 public enum MediaType {
 
-    VIDEO, PHOTO, AUDIO
+    NONE, VIDEO, PHOTO, AUDIO
 }

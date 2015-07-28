@@ -1,6 +1,5 @@
 package com.republic.ui.support.posterstrategy;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -29,7 +28,7 @@ public class VideoPoster implements Poster {
         File file = new File(corruption.getMediaFilePath());
 
         Bundle params = new Bundle();
-        params.putString("description", Utils.getNarrative(context, corruption));
+        params.putString(Utils.Constants.DESCRIPTION, Utils.getNarrative(context, corruption));
         params.putByteArray(corruption.getMediaFilePath(), Utils.convertFileToBytes(file));
 
         GraphRequest request = new GraphRequest(accessToken,
@@ -38,7 +37,7 @@ public class VideoPoster implements Poster {
             public void onCompleted(GraphResponse graphResponse) {
                 if (graphResponse.getError() == null) {
                     try {
-                        corruption.setPostId(graphResponse.getJSONObject().getString("post_id"));
+                        corruption.setPostId(graphResponse.getJSONObject().getString(Utils.Constants.POST_ID));
                     } catch (JSONException e) {
                         Logger.log(AudioPoster.class, e.getMessage());
                     }

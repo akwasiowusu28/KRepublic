@@ -1,27 +1,27 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin"
-                android:paddingTop="@dimen/activity_vertical_margin"
-                android:paddingBottom="@dimen/activity_vertical_margin"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
               android:orientation="vertical"
-                tools:context="com.republic.ui.fragments.IncidentDetail"
-              android:weightSum="1">
+              android:paddingBottom="@dimen/activity_vertical_margin"
+              android:paddingLeft="@dimen/activity_horizontal_margin"
+              android:paddingRight="@dimen/activity_horizontal_margin"
+              android:paddingTop="@dimen/activity_vertical_margin"
+              android:weightSum="1"
+              tools:context="com.republic.ui.fragments.IncidentDetail">
 
     <TextView
-        android:text="@string/at"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:text="@string/at"/>
 
     <EditText
+        android:id="@+id/location"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:hint="@string/location_hint"
-        android:id="@+id/location"
+        android:layout_marginBottom="10dp"
         android:background="@android:drawable/edit_text"
-        android:layout_marginBottom="10dp"/>
+        android:hint="@string/location_hint"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -29,14 +29,14 @@
         android:text="@string/incident_description"/>
 
     <EditText
+        android:id="@+id/incidentDescription"
         android:layout_width="match_parent"
         android:layout_height="170dp"
-        android:id="@+id/incidentDescription"
         android:layout_marginBottom="10dp"
-        android:inputType="textMultiLine"
-        android:maxLines="10"
         android:background="@android:drawable/editbox_background_normal"
         android:gravity="top"
+        android:inputType="textMultiLine"
+        android:maxLines="10"
         />
 
     <TextView
@@ -47,36 +47,36 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="60dp"
-        android:orientation="horizontal"
-        android:layout_marginBottom="20dp">
+        android:layout_marginBottom="20dp"
+        android:orientation="horizontal">
 
         <ImageButton
             android:id="@+id/videoButton"
             android:layout_width="87dp"
-            android:scaleType="fitCenter"
             android:layout_height="60dp"
             android:contentDescription="@string/video"
+            android:scaleType="fitCenter"
             android:src="@drawable/video"/>
 
         <ImageButton
             android:id="@+id/cameraButton"
             android:layout_width="87dp"
             android:layout_height="60dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/camera"
-            android:paddingTop="15dp"
+            android:contentDescription="@string/photo"
             android:paddingBottom="15dp"
-            android:contentDescription="@string/photo"/>
+            android:paddingTop="15dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/camera"/>
 
         <ImageButton
             android:id="@+id/voiceButton"
             android:layout_width="87dp"
             android:layout_height="60dp"
+            android:contentDescription="@string/voice"
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp"
             android:scaleType="fitCenter"
             android:src="@drawable/voice"
-            android:contentDescription="@string/voice"
-            android:paddingTop="15dp"
-            android:paddingBottom="15dp"
             android:visibility="visible"
             />
 
@@ -84,26 +84,27 @@
             android:id="@+id/recordingButton"
             android:layout_width="87dp"
             android:layout_height="60dp"
-            android:paddingLeft="5dp"
             android:drawableLeft="@drawable/recording"
-            android:visibility="gone" />
+            android:paddingLeft="5dp"
+            android:visibility="gone"/>
 
         <ImageButton
             android:id="@+id/galleryButton"
-            android:scaleType="fitCenter"
             android:layout_width="87dp"
             android:layout_height="60dp"
-            android:src ="@drawable/gallery"
             android:contentDescription="@string/gallery"
-            android:paddingLeft="1dp"/>
+            android:paddingLeft="1dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/gallery"/>
     </LinearLayout>
 
     <CheckBox
+        android:id="@+id/honorCheck"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/honor_code"
+        android:layout_marginBottom="10dp"
         android:gravity="center|fill"
-        android:layout_marginBottom="10dp"/>
+        android:text="@string/honor_code"/>
 
     <Button
         android:id="@+id/submitButton"

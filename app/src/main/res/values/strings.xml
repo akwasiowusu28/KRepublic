@@ -1,11 +1,9 @@
 <resources>
-    <string name="app_name">K Republic</string>
+    <string name="app_name">kRepublic</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-
     <string name="action_example">Example action</string>
-
     <string name="action_settings">Settings</string>
     <string name="fraud">Fraud</string>
     <string name="bribery">Bribery</string>
@@ -14,9 +12,7 @@
     <string name="extortion">Extortion</string>
     <string name="embezzlement">Embezzlement</string>
     <string name="favoritism">Favoritism, nepotism, clientelism</string>
-
     <string name="doublearrow">&#187;</string>
-
     <string name="frauddescription">An act of deliberate deception to secure unlawful gain</string>
     <string name="briberydescription">Money or gift offered to secure illicit gain</string>
     <string name="abusedescription">Use of office for personal gain, injustice, or other malfeasance</string>
@@ -82,4 +78,5 @@
     <string name="view">View</string>
     <string name="loading">loading&#8230;</string>
     <string name="reports">Reports</string>
+    <string name="checkHonor">Please read and check the honor code to proceed</string>
 </resources>

@@ -1,6 +1,5 @@
 package com.republic.ui.support.posterstrategy;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,14 +31,14 @@ public class AudioPoster implements Poster {
             @Override
             public void performOperation( String audioLink) {
                 Bundle params = new Bundle();
-                params.putString("message", audioLink + "\n" + Utils.getNarrative(context, corruption));
+                params.putString(Utils.Constants.MESSAGE, audioLink + "\n" + Utils.getNarrative(context, corruption));
                 GraphRequest request = new GraphRequest(accessToken,
                         Utils.Constants.PAGE_FEED, params, HttpMethod.POST, new GraphRequest.Callback() {
                     @Override
                     public void onCompleted(GraphResponse graphResponse) {
                         if (graphResponse.getError() == null) {
                             try {
-                                corruption.setPostId(graphResponse.getJSONObject().getString("post_id"));
+                                corruption.setPostId(graphResponse.getJSONObject().getString(Utils.Constants.POST_ID));
                             } catch (JSONException e) {
                                 Logger.log(AudioPoster.class, e.getMessage());
                             }

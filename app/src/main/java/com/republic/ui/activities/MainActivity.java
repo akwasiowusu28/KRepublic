@@ -1,9 +1,6 @@
 package com.republic.ui.activities;
 
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
@@ -22,10 +19,7 @@ import com.republic.ui.R;
 import com.republic.ui.fragments.CasesFragment;
 import com.republic.ui.fragments.NavigationDrawerFragment;
 import com.republic.ui.fragments.ReportFragment;
-import com.republic.ui.support.Logger;
 import com.republic.ui.support.Utils;
-
-import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity
@@ -108,56 +102,29 @@ public class MainActivity extends AppCompatActivity
         switch (position) {
             case 0:
             case 1:
-                setCurrentFragmentTo(ReportFragment.newInstance());
+                setCurrentFragmentTo(ReportFragment.newInstance(), R.string.app_name);
                 break;
             case 2:
-                launchFacebookPage();
+                Utils.launchFacebookPage(this, Utils.Constants.PAGE_APP_LINK, Utils.Constants.PAGE_WEB_LINK);
                 break;
             case 3:
-                setCurrentFragmentTo(CasesFragment.newInstance());
+                setCurrentFragmentTo(CasesFragment.newInstance(), R.string.reports);
                 break;
         }
     }
 
-    private void setCurrentFragmentTo(Fragment fragment) {
+    private void setCurrentFragmentTo(Fragment fragment, int currentTitle) {
         getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment)
                 .commit();
+        getSupportActionBar().setTitle(currentTitle);
     }
-
-    private void launchFacebookPage() {
-        try {
-            String appLink = Utils.Constants.PAGE_APP_LINK;
-            String webLink = Utils.Constants.PAGE_WEB_LINK;
-
-            Intent intent = new Intent(Intent.ACTION_VIEW,
-                    Uri.parse(isFacebookInstalled() ? appLink : webLink));
-            startActivity(intent);
-        } catch (Exception e) {
-            Logger.log(MainActivity.class, e.getMessage());
-        }
-    }
-
-    boolean isFacebookInstalled() {
-        List<ApplicationInfo> apps;
-        PackageManager packageManager = getPackageManager();
-        apps = packageManager.getInstalledApplications(0);
-
-        for (ApplicationInfo app : apps) {
-            if (app.packageName.equals(Utils.Constants.FB_PACKAGE))
-                return app.enabled;
-        }
-        return false;
-    }
-
 
     public void restoreActionBar() {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayShowTitleEnabled(true);
-            actionBar.setTitle(mTitle);
         }
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

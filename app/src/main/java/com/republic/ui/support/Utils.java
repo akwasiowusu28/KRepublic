@@ -2,9 +2,13 @@ package com.republic.ui.support;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.telephony.TelephonyManager;
 import android.view.View;
@@ -12,6 +16,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.republic.entities.Corruption;
+import com.republic.entities.MediaType;
 import com.republic.ui.R;
 
 import org.apache.commons.io.FileUtils;
@@ -19,6 +24,7 @@ import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.List;
 
 /** *
  * Created by Akwasi Owusu on 7/9/15.
@@ -45,9 +51,15 @@ public class Utils {
         public static final String USER_CONFIRMED = "User confirmed";
         public static final String USER_TOKEN = "User token";
         public static final String PHONE ="phone";
+        public static final String FB_DOT_COM = "https://www.facebook.com/";
+        public static final String FB_APP_POST ="fb://post/";
         public static final String PAGE_APP_LINK = "fb://page/" + PAGE_PROFILE_ID;
         public static final String FB_PACKAGE = "com.facebook.katana";
-        public static final String PAGE_WEB_LINK = "https://www.facebook.com/" + PAGE_PROFILE_ID;
+        public static final String PAGE_WEB_LINK = FB_DOT_COM + PAGE_PROFILE_ID;
+        public static final String POST_ID = "post_id";
+        public static final String MESSAGE = "message";
+        public static final String CAPTION = "caption";
+        public static final String DESCRIPTION = "description";
     }
 
     private static Drawable defaultEditTextBackground = null;
@@ -126,15 +138,48 @@ public class Utils {
         String token = readFromPref(context, Constants.USER_TOKEN);
 
         String citizenId = token.substring(token.length() - 5);
+        MediaType mediaType = corruption.getMediaType();
+
         String citizen = "Citizen " + citizenId;
         String narrative = citizen + " says: \n\n" + context.getString(R.string.opening_line) + " ";
         narrative += corruption.getCorruptionType().toString() + " ";
         narrative += context.getString(R.string.at).toLowerCase() + " " + corruption.getLocation() + ".\n\n";
         narrative += context.getString(R.string.incident_description) + ":\n\n";
         narrative += corruption.getDescription() + "\n\n";
-        narrative += "This " + corruption.getMediaType().toString().toLowerCase() + " " + context.getString(R.string.this_is_evidence) + "\n \n";
+        if(mediaType != MediaType.NONE) {
+            narrative += "This " + corruption.getMediaType().toString().toLowerCase() + " " + context.getString(R.string.this_is_evidence) + "\n \n";
+        }
         narrative += context.getString(R.string.honor_code);
 
         return narrative;
+    }
+
+    public static void launchFacebookPage(Context context, String appLink, String webLink) {
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW,
+                    Uri.parse(isFacebookInstalled(context) ? appLink : webLink));
+            context.startActivity(intent);
+        } catch (Exception e) {
+            Logger.log(context.getClass(), e.getMessage());
+        }
+    }
+
+    private  static boolean isFacebookInstalled(Context context) {
+        List<ApplicationInfo> apps;
+        PackageManager packageManager = context.getPackageManager();
+        apps = packageManager.getInstalledApplications(0);
+
+        for (ApplicationInfo app : apps) {
+            if (app.packageName.equals(Utils.Constants.FB_PACKAGE))
+                return app.enabled;
+        }
+        return false;
+    }
+
+    public static void clearInputTextFields(View... views) {
+        for (View view : views) {
+            if(view instanceof EditText)
+                ( (EditText)view).setText("");
+        }
     }
 }

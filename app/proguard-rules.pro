@@ -15,3 +15,19 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+-keepclassmembers class * {
+    public <init>(android.content.Context);
+ }
+
+-dontwarn weborb.**
+-dontwarn com.backendless.**
+-dontwarn org.apache.**
+-dontwarn com.soundcloud.**
+-dontwarn android.test.**
+
+-keep class backendless.** { *; }
+-keep class com.backendless.** { *; }
+-keep class weborb.** { *; }
+-keep class de.voidplus.** { *; }
+-keep class org.apache.** { *; }
