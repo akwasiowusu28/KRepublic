@@ -17,7 +17,7 @@ import java.util.Date;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
-public class CloudServiceImpl implements CloudService {
+public class CloudServiceImpl implements CloudPersistenceService, CloudUserService, CloudQueryService {
 
     private boolean isCollectionOperation;
     //This is to make sure the right objects are passed to the callback method in case there are multiple request that return collections.

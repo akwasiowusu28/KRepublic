@@ -1,7 +1,9 @@
 package com.republic.domain;
 
 import com.backendless.BackendlessUser;
-import com.republic.cloudbaas.CloudService;
+import com.republic.cloudbaas.CloudPersistenceService;
+import com.republic.cloudbaas.CloudQueryService;
+import com.republic.cloudbaas.CloudUserService;
 import com.republic.entities.User;
 import com.republic.support.OperationCallback;
 import com.republic.support.RepublicFactory;
@@ -11,18 +13,22 @@ import com.republic.support.RepublicFactory;
  */
 public class UserControllerImpl implements UserController {
 
-    private CloudService cloudService;
+    private CloudPersistenceService cloudPersistenceService;
+    private CloudUserService cloudUserService;
+    private CloudQueryService cloudQueryService;
 
     public UserControllerImpl() {
         super();
-        cloudService = RepublicFactory.getCloudService();
+        cloudPersistenceService = RepublicFactory.getPersistenceService();
+        cloudUserService = RepublicFactory.getUserService();
+        cloudQueryService = RepublicFactory.getQueryService();
     }
 
     @Override
     public void createUser(String name, String phone, String password, String deviceId, final OperationCallback<User> operationCallBack) {
         User user = new User(name, password, phone, deviceId, false);
         RepublicFactory.getSession().setUser(user);
-        cloudService.addUser(user, new OperationCallback<BackendlessUser>() {
+        cloudUserService.addUser(user, new OperationCallback<BackendlessUser>() {
             @Override
             public void performOperation(BackendlessUser arg) {
                 operationCallBack.performOperation(constructUserFromBackendless(arg));
@@ -38,7 +44,7 @@ public class UserControllerImpl implements UserController {
 
     @Override
     public void findUser(String deviceId, final OperationCallback<User> operationCallback) {
-        cloudService.findItemByFieldName(LocalConstants.DEVICE_ID, deviceId, BackendlessUser.class,
+        cloudQueryService.findItemByFieldName(LocalConstants.DEVICE_ID, deviceId, BackendlessUser.class,
                 new OperationCallback<BackendlessUser>() {
             @Override
             public void performOperation(BackendlessUser arg) {
@@ -58,7 +64,7 @@ public class UserControllerImpl implements UserController {
     @Override
     public void login(String userId, String password, final OperationCallback<User> operationCallback) {
 
-        cloudService.login(userId, password, new OperationCallback<BackendlessUser>() {
+        cloudUserService.login(userId, password, new OperationCallback<BackendlessUser>() {
             @Override
             public void performOperation(BackendlessUser arg) {
                 User user = constructUserFromBackendless(arg);
@@ -76,7 +82,7 @@ public class UserControllerImpl implements UserController {
 
     @Override
     public void updateUser(User user, final OperationCallback<User> operationCallBack) {
-        cloudService.updateUser(user, new OperationCallback<BackendlessUser>() {
+        cloudUserService.updateUser(user, new OperationCallback<BackendlessUser>() {
             @Override
             public void performOperation(BackendlessUser arg) {
                 operationCallBack.performOperation(constructUserFromBackendless(arg));
@@ -92,7 +98,7 @@ public class UserControllerImpl implements UserController {
     @Override
     public void checkPhoneExists(String phone, final OperationCallback<User> operationCallback) {
 
-        cloudService.findItemsByFieldName(LocalConstants.PHONE, phone, User.class, new OperationCallback<User>() {
+        cloudQueryService.findItemsByFieldName(LocalConstants.PHONE, phone, User.class, new OperationCallback<User>() {
             @Override
             public void performOperation(User arg) {
                 super.performOperation(arg);
