@@ -9,8 +9,8 @@
 
     <style name="MyActionBar"
            parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
-        <item name="android:background">@drawable/bluegradient</item>
-        <item name="background">@drawable/bluegradient</item>
+        <item name="android:background">@color/skyBlue</item>
+        <item name="background">@color/skyBlue</item>
     </style>
     <color name="orange">#F07C00</color>
     <color name="transparent">#00000000</color>

@@ -6,14 +6,14 @@ android {
 
     defaultConfig {
         applicationId "com.republic.ui"
-        minSdkVersion 14
+        minSdkVersion 10
         targetSdkVersion 22
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1"
     }
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -39,7 +39,7 @@ repositories {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.facebook.android:facebook-android-sdk:4.4.0'
-    compile 'com.android.support:appcompat-v7:22.2.0'
+    compile 'com.android.support:appcompat-v7:22.2.1'
     compile 'commons-io:commons-io:2.4'
     compile files('libs/soundcloud-0.2.1-jar-with-dependencies.jar')
     compile 'com.backendless:android:1.0'
