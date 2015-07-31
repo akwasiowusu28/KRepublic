@@ -1,62 +1,73 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-              android:padding="10dp"
-              android:weightSum="1"
-              tools:context="com.republic.ui.activities.SignUpActivity">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            tools:context="com.republic.ui.activities.SignUpActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/name" />
-
-    <EditText
-        android:id="@+id/userName"
+    <LinearLayout
+        android:gravity="center_vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textPersonName" />
+        android:orientation="vertical"
+        android:padding="25dp"
+        android:background="@drawable/bluegradient"
+        android:weightSum="1">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/phone" />
+        <EditText
+            android:textCursorDrawable="@null"
+            android:textColor="@android:color/white"
+            android:hint="@string/name"
+            android:drawableLeft="@drawable/person"
+            android:id="@+id/userName"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/editfieldbackground"
+            android:inputType="textPersonName"/>
 
-    <EditText
-        android:id="@+id/phoneNumber"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="phone" />
+        <EditText
+            android:textCursorDrawable="@null"
+            android:textColor="@android:color/white"
+            android:hint="@string/phone"
+            android:drawableLeft="@drawable/phone"
+            android:id="@+id/phoneNumber"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/editfieldbackground"
+            android:inputType="phone"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/password" />
+        <EditText
+            android:textCursorDrawable="@null"
+            android:textColor="@android:color/white"
+            android:hint="@string/password"
+            android:drawableLeft="@drawable/lock"
+            android:layout_height="50dp"
+            android:background="@drawable/editfieldbackground"
+            android:id="@+id/password"
+            android:layout_width="match_parent"
+            android:inputType="textPassword"/>
 
-    <EditText
-        android:id="@+id/password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textPassword" />
+        <EditText
+            android:textCursorDrawable="@null"
+            android:textColor="@android:color/white"
+            android:hint="@string/confirmPassword"
+            android:drawableLeft="@drawable/lock"
+            android:id="@+id/confirmPassword"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/editfieldbackground"
+            android:inputType="textPassword"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/confirmPassword" />
+        <Button
+            android:layout_marginTop="20dp"
+            android:id="@+id/createAccountButton"
+            android:layout_width="270dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="50dp"
+            android:background="@drawable/borderonly"
+            android:textColor="@android:color/white"
+            android:text="@string/createAccount"/>
 
-    <EditText
-        android:id="@+id/confirmPassword"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textPassword" />
-
-
-
-    <Button
-        android:id="@+id/createAccountButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/createAccount" />
-
-</LinearLayout>
+    </LinearLayout>
+</ScrollView>

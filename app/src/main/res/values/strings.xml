@@ -49,7 +49,7 @@
     <string name="phone">Phone</string>
     <string name="title_activity_login">Login</string>
     <string name="dontHaveAccount">Not a member yet?</string>
-    <string name="login">login</string>
+    <string name="login">Login</string>
     <string name="login_failed">Wrong username or password</string>
     <string name="accountLookupFailed">No user exists with this number in the system</string>
     <string name="accountExistForOtherDevice">An account has already been set up on a different device. Would you like to set it up for this device instead?</string>

@@ -12,18 +12,18 @@
         android:gravity="center_vertical"
         android:orientation="vertical"
         android:padding="25dp"
-        android:focusable="true"
         >
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="25dp"
             android:text="@string/krepublic"
             android:textColor="@android:color/white"
-            android:textStyle="bold"
-            android:layout_gravity="center"
             android:textSize="20sp"
-            android:layout_marginBottom="25dp"/>
+            android:textStyle="bold"/>
+
         <EditText
             android:id="@+id/loginPhoneNumber"
             android:layout_width="match_parent"
@@ -37,13 +37,14 @@
             android:id="@+id/loginPassword"
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            android:layout_marginBottom="12dp"
             android:background="@drawable/editfieldbackground"
             android:drawableLeft="@drawable/lock"
             android:inputType="textPassword"
-            android:textColor="@android:color/white"
-            android:layout_marginBottom="12dp"/>
+            android:textColor="@android:color/white"/>
 
         <Button
+            android:textAllCaps="true"
             android:id="@+id/loginButton"
             android:layout_width="270dp"
             android:layout_height="40dp"
@@ -64,7 +65,7 @@
 
         <Button
             android:id="@+id/signupButton"
-            android:layout_width="280dp"
+            android:layout_width="270dp"
             android:layout_height="40dp"
             android:layout_gravity="center_horizontal"
             android:background="@drawable/borderonly"
