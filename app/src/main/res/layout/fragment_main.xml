@@ -1,27 +1,34 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin"
-                android:paddingTop="@dimen/activity_vertical_margin"
-                android:paddingBottom="@dimen/activity_vertical_margin"
-                tools:context=".MainActivity$PlaceholderFragment">
-
-    <TextView
-        android:id="@+id/openingLine"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@drawable/bluegradient"
+              android:padding="@dimen/activity_vertical_margin"
+              tools:context="com.republic.ui.fragments.ReportFragment">
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/opening_line"
-        android:textStyle="bold"
+        android:background="@drawable/whiterounded"
+        android:orientation="vertical"
+        android:elevation="6dp"
+        android:padding="10dp">
 
-        android:layout_marginBottom="10dp"/>
+        <TextView
+            android:id="@+id/openingLine"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:text="@string/opening_line"
+            android:textStyle="bold"/>
 
-    <ListView
-        android:id="@+id/mainpagelistview"
-        android:layout_below="@id/openingLine"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center" />
+        <ListView
+            android:id="@+id/mainpagelistview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+    </LinearLayout>
 
-</RelativeLayout>
+
+</LinearLayout>

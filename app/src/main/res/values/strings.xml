@@ -79,4 +79,5 @@
     <string name="loading">loading&#8230;</string>
     <string name="reports">Reports</string>
     <string name="checkHonor">Please read and check the honor code to proceed</string>
+    <string name="title_activity_main2">Main2Activity</string>
 </resources>
