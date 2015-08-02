@@ -20,6 +20,7 @@ import android.widget.ImageButton;
 import com.republic.entities.Corruption;
 import com.republic.entities.CorruptionType;
 import com.republic.entities.MediaType;
+import com.republic.support.OperationCallback;
 import com.republic.ui.R;
 import com.republic.ui.support.Logger;
 import com.republic.ui.support.Utils;
@@ -196,7 +197,15 @@ public class IncidentDetail extends Fragment {
         Corruption corruption = buildCorruptionObject(fileName);
 
         if (corruption != null) {
-            new PostMaster(context, poster).post(corruption);
+            new PostMaster(context, poster).post(corruption, new OperationCallback<Corruption>() {
+                @Override
+                public void performOperation(Corruption arg) {
+                    String postId = arg.getPostId();
+                    Utils.launchFacebookPage(context,
+                            Utils.Constants.FB_APP_POST+postId,
+                            Utils.Constants.FB_DOT_COM + postId);
+                }
+            });
             reset();
         } else {
             Logger.log(IncidentDetail.class, LocalConstants.CORRUPTION_NULL);

@@ -2,7 +2,6 @@ package com.republic.ui.support.posterstrategy;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.os.AsyncTask;
 
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenSource;
@@ -40,13 +39,16 @@ public class PostMaster {
         setupProgressDialog();
     }
 
-    public void post(final Corruption corruption) {
+    public void post(final Corruption corruption, final OperationCallback<Corruption> callback) {
         progressDialog.show();
         poster.post(context, corruption, accessToken, new OperationCallback<Integer>() {
             @Override
             public void performOperation(Integer messageStringId) {
                 domain.saveCorruption(corruption);
                 dismissProgressDialog();
+
+                callback.performOperation(messageStringId == R.string.success ? corruption : (Corruption)null);
+
                 Utils.makeToast(context.getApplicationContext(), messageStringId);
             }
         });

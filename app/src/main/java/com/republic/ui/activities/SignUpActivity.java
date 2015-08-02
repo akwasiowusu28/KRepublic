@@ -93,7 +93,6 @@ public class SignUpActivity extends Activity {
         if (passwordsMatch(password, confirmPassword)) {
             createUser(name, phoneNumber, password);
         } else {
-            Utils.switchInvalidFieldsBackColor(false, passwordField, confirmPasswordField);
             Utils.makeToast(context, R.string.passwordsNotMatch);
             dismissProgressDialog();
         }

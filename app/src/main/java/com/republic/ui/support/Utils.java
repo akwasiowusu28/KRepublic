@@ -60,6 +60,8 @@ public class Utils {
         public static final String MESSAGE = "message";
         public static final String CAPTION = "caption";
         public static final String DESCRIPTION = "description";
+        public static final String ALBERT_EINSTEIN = "Albert Einstein";
+        public static final String ALBERT_QUOTE = "The world will not be destroyed by those who do evil, but by those who watch them without doing anything”";
     }
 
     private static Drawable defaultEditTextBackground = null;

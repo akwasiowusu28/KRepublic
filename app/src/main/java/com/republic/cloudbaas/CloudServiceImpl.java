@@ -15,6 +15,7 @@ import com.republic.support.exceptions.CloudRequestFailedException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 @SuppressWarnings("unchecked")
 public class CloudServiceImpl implements CloudPersistenceService, CloudUserService, CloudQueryService {
@@ -136,7 +137,7 @@ public class CloudServiceImpl implements CloudPersistenceService, CloudUserServi
             String upperBoundString = "";
 
             if (lowerBound instanceof Date && upperBound instanceof Date) {
-                SimpleDateFormat dateFormater = new SimpleDateFormat(LocalConstants.DATEFORMAT);
+                SimpleDateFormat dateFormater = new SimpleDateFormat(LocalConstants.DATEFORMAT, Locale.getDefault());
                 lowerBoundString = dateFormater.format((Date) lowerBound);
                 upperBoundString = dateFormater.format((Date) upperBound);
             }
@@ -155,7 +156,7 @@ public class CloudServiceImpl implements CloudPersistenceService, CloudUserServi
 
     public void addUser(User user, OperationCallback<BackendlessUser> operationCallBack) {
 
-        BackendlessUser backendlessUser = (BackendlessUser) user;
+        BackendlessUser backendlessUser = user;
         Backendless.UserService.register(backendlessUser,
                 new BackendAsynCallBack<>(operationCallBack, BackendlessUser.class));
     }

@@ -10,6 +10,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.facebook.FacebookSdk;
+import com.facebook.share.model.AppInviteContent;
+import com.facebook.share.widget.AppInviteDialog;
 import com.republic.domain.Session;
 import com.republic.domain.UserController;
 import com.republic.entities.User;
@@ -110,6 +112,9 @@ public class MainActivity extends AppCompatActivity
             case 3:
                 setCurrentFragmentTo(CasesFragment.newInstance(), R.string.reports);
                 break;
+            case 4:
+                shareAppOnFacebook();
+                break;
         }
     }
 
@@ -137,6 +142,15 @@ public class MainActivity extends AppCompatActivity
             return true;
         }
         return super.onCreateOptionsMenu(menu);
+    }
+
+    private void shareAppOnFacebook(){
+        if(AppInviteDialog.canShow()) {
+            AppInviteContent content = new AppInviteContent.Builder()
+                    .setApplinkUrl("https://fb.me/813785042073183")
+                    .build();
+                AppInviteDialog.show(this, content);
+        }
     }
 
     @Override

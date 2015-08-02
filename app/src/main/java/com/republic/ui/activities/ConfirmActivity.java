@@ -1,8 +1,8 @@
 package com.republic.ui.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.telephony.SmsManager;
 import android.view.View;
 import android.widget.Button;
@@ -19,7 +19,7 @@ import com.republic.ui.support.Utils;
 
 import java.util.Calendar;
 
-public class ConfirmActivity extends AppCompatActivity {
+public class ConfirmActivity extends Activity {
 
     private Button confirmButton;
     private String confirmCode;

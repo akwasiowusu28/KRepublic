@@ -19,7 +19,7 @@
     <string name="wastedescription">Deliberate or negligent misuse of public resources</string>
     <string name="extortiondescription">Money or other items obtained through force or threats</string>
     <string name="embezzlementdescription">Theft or misappropriation of funds</string>
-    <string name="favoritismdescription">Unfair advantage given to relatives or supporters</string>
+    <string name="favoritismdescription">Unfair advantage given to relatives, associates or supporters</string>
     <string name="facebook_app_id">799290236855997</string>
     <string name="title_activity_incident_detail">IncidentDetail</string>
     <string name="opening_line">For the love of God, my country and myself, I\'d like to report a case of </string>
@@ -40,7 +40,7 @@
     <string name="soundcloud_client_secret">afa997bbe96d2a114db9b17a4c0c5f2a</string>
     <string name="soundcloud_pword">kwansema\'smysteries</string>
     <string name="soundcloud_login_id">kwansemarepublic@gmail.com</string>
-    <string name="title_activity_signup">Signup</string>
+    <string name="title_activity_signup">Sign up</string>
     <string name="name">Name</string>
     <string name="password">Password</string>
     <string name="confirmPassword">Confirm password</string>
@@ -59,7 +59,7 @@
     <string name="passwordsNotMatch">Passwords do not match</string>
     <string name="createAccountFailed">Error creating account. Please ensure that you have a stable internet connection and try again</string>
     <string name="createAccountSuccess">Account successfully created!</string>
-    <string name="title_activity_confirm">ConfirmActivity</string>
+    <string name="title_activity_confirm">Confirm phone</string>
     <string name="confirmNumber">Confirm phone number</string>
     <string name="confirmNumberQuestion">An sms with your confirmation code will be sent to the phone number provided. Do you want to continue?</string>
     <string name="sendConfirmCode">Send confirmation code</string>
@@ -80,4 +80,6 @@
     <string name="reports">Reports</string>
     <string name="checkHonor">Please read and check the honor code to proceed</string>
     <string name="title_activity_main2">Main2Activity</string>
+    <string name="quote">\"The world will not be destroyed by those who do evil, but by those who watch them without doing anything\"</string>
+    <string name="quote_author">-Albert Einstein</string>
 </resources>
