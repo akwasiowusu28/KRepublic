@@ -25,16 +25,34 @@
             android:background="@drawable/editfieldbackground"
             android:inputType="textPersonName"/>
 
-        <EditText
-            android:textCursorDrawable="@null"
-            android:textColor="@android:color/white"
-            android:hint="@string/phone"
-            android:drawableLeft="@drawable/phone"
-            android:id="@+id/phoneNumber"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@drawable/editfieldbackground"
-            android:inputType="phone"/>
+            android:layout_height="wrap_content"
+            >
+            <TextView
+                android:textColor="@android:color/white"
+                android:id ="@+id/countryCodeField"
+                android:layout_width="60dp"
+                android:gravity="center"
+                android:layout_marginTop="-1.82dp"
+                android:layout_height="50dp"
+                android:layout_marginRight="-1dp"
+                android:drawableLeft="@drawable/phone"
+                android:background="@drawable/editfieldbackground"
+                />
+            <EditText
+                android:textCursorDrawable="@null"
+                android:textColor="@android:color/white"
+                android:hint="@string/phone"
+                android:layout_marginLeft="-2dp"
+                android:id="@+id/phoneNumber"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:background="@drawable/editfieldbackground"
+                android:inputType="phone"/>
+        </LinearLayout>
+
 
         <EditText
             android:textCursorDrawable="@null"

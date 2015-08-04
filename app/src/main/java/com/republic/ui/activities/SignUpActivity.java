@@ -6,17 +6,22 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.republic.domain.UserController;
 import com.republic.entities.User;
 import com.republic.support.OperationCallback;
 import com.republic.support.RepublicFactory;
 import com.republic.ui.R;
+import com.republic.ui.support.CountryCodeList;
 import com.republic.ui.support.Utils;
+
+import java.util.HashMap;
 
 public class SignUpActivity extends Activity {
 
@@ -25,6 +30,7 @@ public class SignUpActivity extends Activity {
     private ProgressDialog progressDialog;
     private Context context;
     private boolean phoneCheckAlreadyMade = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +39,7 @@ public class SignUpActivity extends Activity {
         userController = RepublicFactory.getUserController();
         context = this;
         setupSignUpButton();
+        setupAreaCodeField();
     }
 
     private void setupSignUpButton() {
@@ -40,14 +47,31 @@ public class SignUpActivity extends Activity {
         signUpButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                signUpAsync().execute(null, null, null);
+                phoneNumber = ((EditText) findViewById(R.id.phoneNumber)).getText().toString();
+                if((phoneNumber.matches(Utils.Constants.SPECIAL_CHARS))){
+                    Utils.makeToast(context, R.string.wrong_number_input);
+                }else {
+                    signUpAsync().execute(null, null, null);
+                }
             }
         });
     }
 
+    private void setupAreaCodeField(){
+        TextView areaCodeField = (TextView)findViewById(R.id.countryCodeField);
+
+        TelephonyManager telephonyManager  = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+        String countryCode = telephonyManager.getSimCountryIso().toUpperCase();
+
+        HashMap<String, String> countryCodes = new CountryCodeList().getCountryCodes();
+        if(countryCodes.containsKey(countryCode)){
+           areaCodeField.setText(countryCodes.get(countryCode));
+        }
+    }
+
     private void createAccount() {
 
-        phoneNumber = ((EditText) findViewById(R.id.phoneNumber)).getText().toString();
+
 
         if(!phoneCheckAlreadyMade) {
             userController.checkPhoneExists(phoneNumber, new OperationCallback<User>() {

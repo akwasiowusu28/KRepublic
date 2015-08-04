@@ -82,4 +82,5 @@
     <string name="title_activity_main2">Main2Activity</string>
     <string name="quote">\"The world will not be destroyed by those who do evil, but by those who watch them without doing anything\"</string>
     <string name="quote_author">-Albert Einstein</string>
+    <string name="wrong_number_input">Phone number cannot contain special characters or spaces</string>
 </resources>
