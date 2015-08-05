@@ -54,12 +54,8 @@ public class MainActivity extends AppCompatActivity
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
-
         redirectIfNotLoggedIn();
 
-        if (!loginRequested) {
-            redirectIfNotNumberConfirmed();
-        }
     }
 
 
@@ -83,13 +79,6 @@ public class MainActivity extends AppCompatActivity
                 loginRequested = true;
                 launchRedirectActivity(LoginActivity.class);
             }
-        }
-    }
-
-    private void redirectIfNotNumberConfirmed() {
-        String userConfirmedPrefValue = Utils.readFromPref(this, Utils.Constants.USER_CONFIRMED);
-        if (!Boolean.parseBoolean(userConfirmedPrefValue)) {
-            launchRedirectActivity(ConfirmActivity.class);
         }
     }
 

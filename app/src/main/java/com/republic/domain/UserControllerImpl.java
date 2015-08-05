@@ -23,7 +23,7 @@ public class UserControllerImpl implements UserController {
 
     @Override
     public void createUser(String name, String phone, String password, String deviceId, final OperationCallback<User> operationCallBack) {
-        User user = new User(name, password, phone, deviceId, false);
+        User user = new User(name, password, phone, deviceId, true);
         RepublicFactory.getSession().setUser(user);
         cloudUserService.addUser(user, new OperationCallback<BackendlessUser>() {
             @Override

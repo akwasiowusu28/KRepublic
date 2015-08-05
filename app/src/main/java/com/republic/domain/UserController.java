@@ -16,4 +16,5 @@ public interface UserController {
     void updateUser(User user, OperationCallback<User> operationCallBack);
 
     void checkPhoneExists(String phone, OperationCallback<User> operationCallback);
+
 }

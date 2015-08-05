@@ -1,7 +1,9 @@
 package com.republic.ui.activities;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.view.View;
@@ -29,7 +31,10 @@ public class ConfirmActivity extends Activity {
     private EditText confirmTextField;
     private TextView confirmLabel;
     private Button sendCodeButton;
-    private User user;
+    private ProgressDialog progressDialog;
+    private String name;
+    private String password;
+    private String phone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +45,14 @@ public class ConfirmActivity extends Activity {
         setupConfirmButton();
         showConfirmAlertDialog();
         setupSendConfirmationCodeButton();
+        retrieveUserDetails();
+    }
+
+    private void retrieveUserDetails() {
+        Intent intent = getIntent();
+        name = intent.getStringExtra(Utils.Constants.USER_NAME);
+        phone = intent.getStringExtra(Utils.Constants.PHONE);
+        password = intent.getStringExtra(Utils.Constants.PASSWORD);
     }
 
     private void initializeFields() {
@@ -57,13 +70,79 @@ public class ConfirmActivity extends Activity {
 
             @Override
             public void onClick(View v) {
-                if(confirmTextField.getText().toString().equals(confirmCode)) {
-                    updateUser();
-                }else{
-                   Utils.makeToast(ConfirmActivity.this, R.string.confirmation_failed);
+
+                String codeFromPref = Utils.readFromPref(ConfirmActivity.this, Utils.Constants.CONFIRM_CODE);
+
+                if (confirmTextField.getText().toString().equals(codeFromPref)) {
+                    createAccountAsync().execute();
+                } else {
+                    Utils.makeToast(ConfirmActivity.this, R.string.confirmation_failed);
                 }
             }
         });
+    }
+
+    private void createUser() {
+
+        userController.createUser(name, phone, password, Utils.getDeviceId(ConfirmActivity.this),
+                new OperationCallback<User>() {
+
+                    @Override
+                    public void performOperation(User arg) {
+                        userController.login(phone, password, userLoginCallBack);
+                    }
+
+                    @Override
+                    public void onOperationFailed(Throwable e) {
+                        Utils.makeToast(ConfirmActivity.this, R.string.createAccountFailed);
+                        dismissProgressDialog();
+                    }
+                });
+    }
+
+    private OperationCallback<User> userLoginCallBack = new OperationCallback<User>() {
+        @Override
+        public void performOperation(User user) {
+            Utils.writeToPref(ConfirmActivity.this, Utils.Constants.USER_TOKEN, user.getObjectId());
+            dismissProgressDialog();
+            launchMainActivity();
+        }
+    };
+
+    private AsyncTask<Void, Void, Void> createAccountAsync() {
+        return new AsyncTask<Void, Void, Void>() {
+
+            @Override
+            protected void onPreExecute() {
+                setupProgressDialog();
+                if (progressDialog != null) {
+                    progressDialog.show();
+                }
+            }
+
+            @Override
+            protected Void doInBackground(Void... params) {
+
+                createUser();
+
+                return null;
+            }
+        };
+    }
+
+    private void setupProgressDialog() {
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setCancelable(false);
+            progressDialog.setIndeterminate(true);
+            progressDialog.setMessage(getText(R.string.pleaseWait));
+        }
+    }
+
+    private void dismissProgressDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
     }
 
     private void setupSendConfirmationCodeButton() {
@@ -82,6 +161,7 @@ public class ConfirmActivity extends Activity {
         confirmAlertDialog.setTitle(getString(R.string.confirmNumber));
         confirmAlertDialog
                 .setMessage(getString(R.string.confirmNumberQuestion));
+        confirmAlertDialog.setCancelable(false);
         confirmAlertDialog.show();
     }
 
@@ -92,14 +172,11 @@ public class ConfirmActivity extends Activity {
 
                     @Override
                     public void yesButtonOperation() {
-                        user  = RepublicFactory.getSession().getCurrentUser();
-
                         sendConfirmSMS();
 
                         if (confirmFieldsDisabled) {
                             changeConfirmFieldsVisibility(true);
                             sendCodeButton.setVisibility(View.GONE);
-
                         }
                     }
 
@@ -117,32 +194,11 @@ public class ConfirmActivity extends Activity {
         Utils.switchViewVisibility(makeVisible, confirmButton, confirmTextField, confirmLabel);
     }
 
-    private void updateUser() {
-
-        if(user != null) {
-            user.setIsConfirmed(true);
-            userController.updateUser(user, new OperationCallback<User>() {
-                @Override
-                public  void performOperation(User arg) {
-                    Utils.writeToPref(ConfirmActivity.this, Utils.Constants.USER_CONFIRMED, String.valueOf(true));
-                    launchMainActivity();
-                }
-
-                @Override
-                public void onOperationFailed(Throwable e) {
-                    super.onOperationFailed(e);
-                    Utils.makeToast(ConfirmActivity.this, R.string.confirmation_failed);
-                }
-            });
-        }
-    }
-
     private void sendConfirmSMS() {
         generateConfirmCode();
-        String phoneNumber = user != null ? user.getPhone() : Utils.readFromPref(this, Utils.Constants.PHONE);
-        if(! Utils.isEmptyString(phoneNumber)) {
+        if (!Utils.isEmptyString(phone)) {
             SmsManager manager = SmsManager.getDefault();
-            manager.sendTextMessage(phoneNumber, null, getConfirmMessage(), null, null);
+            manager.sendTextMessage(phone, null, getConfirmMessage(), null, null);
         }
     }
 
@@ -155,6 +211,7 @@ public class ConfirmActivity extends Activity {
                 .getTimeInMillis());
         confirmCode = currentTimeString
                 .substring(currentTimeString.length() - 4);
+        Utils.writeToPref(this, Utils.Constants.CONFIRM_CODE, confirmCode);
     }
 
     private void launchMainActivity() {
@@ -165,6 +222,5 @@ public class ConfirmActivity extends Activity {
 
     private class LocalConstants {
         public static final String CONFIRM_SMS_MESSAGE = "Your Republic membership confirmation code is: ";
-        public static final String ISCONFIRMED = "isconfirmed";
     }
 }

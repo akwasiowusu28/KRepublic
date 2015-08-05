@@ -60,7 +60,10 @@ public class Utils {
         public static final String MESSAGE = "message";
         public static final String CAPTION = "caption";
         public static final String DESCRIPTION = "description";
-        public static final String SPECIAL_CHARS = "[!@#$%\\^&*\\( \\)\\.\\,'\"\\\\?\\-/\\|_\\[\\+\\+`~\\s]";
+        public static final String NUMS_REGEX = "^[0-9]*$";
+        public static final String USER_NAME ="username";
+        public static final String PASSWORD = "password";
+        public static final String CONFIRM_CODE ="confirmCode";
     }
 
     private static Drawable defaultEditTextBackground = null;

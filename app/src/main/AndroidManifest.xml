@@ -61,17 +61,21 @@
         <activity
             android:name=".activities.SignUpActivity"
             android:label="@string/title_activity_signup"
-            android:windowSoftInputMode="stateAlwaysHidden" >
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:configChanges="orientation|keyboardHidden|screenSize">
         </activity>
         <activity
             android:name=".activities.LoginActivity"
             android:label="@string/title_activity_login"
-            android:windowSoftInputMode="stateAlwaysHidden" >
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:noHistory="true"
+            android:configChanges="orientation|keyboardHidden|screenSize">
         </activity>
         <activity
             android:name=".activities.ConfirmActivity"
             android:label="@string/title_activity_confirm"
-            android:windowSoftInputMode="stateAlwaysHidden" >
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:configChanges="orientation|keyboardHidden|screenSize">
         </activity>
     </application>
 

@@ -30,6 +30,9 @@ public class SignUpActivity extends Activity {
     private ProgressDialog progressDialog;
     private Context context;
     private boolean phoneCheckAlreadyMade = false;
+    private String name;
+    private String password;
+    private String confirmPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,11 +50,31 @@ public class SignUpActivity extends Activity {
         signUpButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+
+
+                EditText passwordField = (EditText) findViewById(R.id.password);
+                EditText confirmPasswordField = (EditText) findViewById(R.id.confirmPassword);
+
+                 name = ((EditText) findViewById(R.id.userName)).getText().toString();
+                 password = passwordField.getText().toString();
+                 confirmPassword = confirmPasswordField.getText().toString();
+
                 phoneNumber = ((EditText) findViewById(R.id.phoneNumber)).getText().toString();
-                if((phoneNumber.matches(Utils.Constants.SPECIAL_CHARS))){
+                String goodChars = Utils.Constants.NUMS_REGEX;
+
+
+                if ((!phoneNumber.matches(goodChars))) {
+
                     Utils.makeToast(context, R.string.wrong_number_input);
-                }else {
-                    signUpAsync().execute(null, null, null);
+
+                } else {
+
+                    if(isPasswordMatch()) {
+                        String code = ((TextView) findViewById(R.id.countryCodeField)).getText().toString();
+                        phoneNumber = code + phoneNumber;
+                        signUpAsync().execute(null, null, null);
+                    }
+
                 }
             }
         });
@@ -71,15 +94,14 @@ public class SignUpActivity extends Activity {
 
     private void createAccount() {
 
-
-
         if(!phoneCheckAlreadyMade) {
             userController.checkPhoneExists(phoneNumber, new OperationCallback<User>() {
 
                 @Override
                 public void performOperation(User arg) {
                     if (arg == null) {
-                        performCreateAccount();
+                        dismissProgressDialog();
+                        confirmPhone(name, phoneNumber, password);
                         phoneCheckAlreadyMade = true;
                     } else {
                         Utils.makeToast(context, R.string.accountExistForPhone);
@@ -89,7 +111,6 @@ public class SignUpActivity extends Activity {
             });
         }
     }
-
 
     private void setupProgressDialog() {
         if (progressDialog == null) {
@@ -106,40 +127,26 @@ public class SignUpActivity extends Activity {
         }
     }
 
-    private void performCreateAccount() {
-        EditText passwordField = (EditText) findViewById(R.id.password);
-        EditText confirmPasswordField = (EditText) findViewById(R.id.confirmPassword);
+    private boolean isPasswordMatch() {
 
-        String name = ((EditText) findViewById(R.id.userName)).getText().toString();
-        String password = passwordField.getText().toString();
-        String confirmPassword = confirmPasswordField.getText().toString();
-
+        boolean isMatch = false;
         if (passwordsMatch(password, confirmPassword)) {
-            createUser(name, phoneNumber, password);
+           isMatch = true;
         } else {
             Utils.makeToast(context, R.string.passwordsNotMatch);
-            dismissProgressDialog();
         }
+        return isMatch;
     }
 
-    private void createUser(final String name, final String phone, final String password) {
+    private void confirmPhone(final String name, final String phone, final String password) {
 
-        userController.createUser(name, phone, password,Utils.getDeviceId(this), new OperationCallback<User>() {
+        Intent intent = new Intent(this, ConfirmActivity.class);
+        intent.putExtra(Utils.Constants.USER_NAME, name);
+        intent.putExtra(Utils.Constants.PASSWORD, password);
+        intent.putExtra(Utils.Constants.PHONE, phone);
+        startActivity(intent);
 
-            @Override
-            public void performOperation(User arg) {
-                Utils.writeToPref(context, Utils.Constants.USER_CONFIRMED, String.valueOf(false));
-                dismissProgressDialog();
-                userController.login(phone, password, null); // attempt log in, fire and forget...idea is, if successful, user will not be shown the log in page when the main page launches
-                launchConfirmActivity();
-            }
-
-            @Override
-            public void onOperationFailed(Throwable e) {
-                Utils.makeToast(context, R.string.createAccountFailed);
-                dismissProgressDialog();
-            }
-        });
+        finish();
     }
 
     private AsyncTask<Void, Void, Void> signUpAsync() {
@@ -163,12 +170,6 @@ public class SignUpActivity extends Activity {
 
     private boolean passwordsMatch(String password, String confirmPassword) {
         return password.equals(confirmPassword);
-    }
-
-    private void launchConfirmActivity() {
-        Intent intent = new Intent(this, ConfirmActivity.class);
-        startActivity(intent);
-        finish();
     }
 
     @Override
