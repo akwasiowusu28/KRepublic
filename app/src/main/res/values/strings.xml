@@ -26,7 +26,7 @@
     <string name="at">At</string>
     <string name="location_hint">City, town, institution, office, etc.</string>
     <string name="incident_description">Here is what happened</string>
-    <string name="evidence">And I even have as evidence, a</string>
+    <string name="evidence">And I even have as evidence, a(n)</string>
     <string name="honor_code"><b>Honor code:</b> I promise that this is true and not a libelous statement intended to ruin someone\'s reputation</string>
     <string name="video">Video</string>
     <string name="voice">Voice</string>
@@ -83,4 +83,8 @@
     <string name="quote">\"The world will not be destroyed by those who do evil, but by those who watch them without doing anything\"</string>
     <string name="quote_author">-Albert Einstein</string>
     <string name="wrong_number_input">Phone number cannot contain special characters or spaces</string>
+    <string name="empty_name">Please enter your name</string>
+    <string name="empty_phone">Please enter your phone number</string>
+    <string name="empty_pass">Please enter a password</string>
+    <string name="description_or_location_empty">Please provide both location and description</string>
 </resources>

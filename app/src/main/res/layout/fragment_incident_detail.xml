@@ -52,10 +52,24 @@
                 android:paddingBottom="8dp"
                 />
 
-            <TextView
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/evidence"/>
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/evidence"/>
+                <TextView
+                    android:layout_marginLeft="2dp"
+                    android:id="@+id/attachedMedia"
+                    android:textColor="@color/skyBlue"
+                    android:layout_gravity="center_horizontal"
+                    android:textStyle="bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -83,7 +97,7 @@
                     android:layout_width="0dp"
                     android:layout_height="55dp"
                     android:layout_margin="5dp"
-                    android:layout_weight="0.25"
+                    android:layout_weight="0.24"
                     android:background="#40C8D7E3"
                     android:contentDescription="@string/photo"
                     android:elevation="2dp"
@@ -116,12 +130,10 @@
                     android:layout_width="0dp"
                     android:layout_height="55dp"
                     android:layout_margin="5dp"
-                    android:layout_weight="0.25"
+                    android:layout_weight="0.26"
                     android:background="#40C8D7E3"
                     android:drawableLeft="@drawable/recording"
                     android:elevation="2dp"
-                    android:padding="8dp"
-                    android:paddingLeft="5dp"
                     android:translationZ="2dp"
                     android:visibility="gone"/>
 

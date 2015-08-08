@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.republic.entities.Corruption;
 import com.republic.entities.CorruptionType;
@@ -60,7 +61,6 @@ public class IncidentDetail extends Fragment {
     CheckBox honorCheckBox;
     EditText locationField;
     EditText descriptionField;
-    private ViewGroup.LayoutParams descriptionLayoutParam = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -81,12 +81,10 @@ public class IncidentDetail extends Fragment {
         audioRecordLauncher = new AudioRecordLauncher(this);
         userId = Utils.readFromPref(context, Utils.Constants.USER_TOKEN);
         View view = getView();
-        boolean areValid = false;
         if (view != null) {
             honorCheckBox = (CheckBox) view.findViewById(R.id.honorCheck);
             locationField = (EditText) view.findViewById(R.id.location);
             descriptionField = (EditText) view.findViewById(R.id.incidentDescription);
-            descriptionLayoutParam = descriptionField.getLayoutParams();
         }
     }
 
@@ -123,15 +121,17 @@ public class IncidentDetail extends Fragment {
             switch (view.getId()) {
                 case R.id.videoButton:
                     videoFileName = new LaunchMaster(new CamcorderLauncher(IncidentDetail.this)).launch();
-                    selectedMediaType = MediaType.VIDEO;
                     break;
                 case R.id.cameraButton:
                     photoFileName = new LaunchMaster(new CameraLauncher(IncidentDetail.this)).launch();
-                    selectedMediaType = MediaType.PHOTO;
                     break;
                 case R.id.voiceButton:
                     audioFileName = new LaunchMaster(audioRecordLauncher).launch();
                     selectedMediaType = MediaType.AUDIO;
+                    setAttachedMediaTextValue(selectedMediaType.toString());
+                    break;
+                case R.id.recordingButton:
+                    audioRecordLauncher.stopRecording();
                     break;
                 case R.id.galleryButton:
                     new LaunchMaster(new MediaFileSystemLauncher(IncidentDetail.this)).launch();
@@ -165,11 +165,7 @@ public class IncidentDetail extends Fragment {
     }
 
     private boolean areFieldsValid() {
-        View view = getView();
         boolean areValid = false;
-
-        Utils.switchInvalidFieldsBackColor(true, locationField, descriptionField);
-        descriptionField.setLayoutParams(descriptionLayoutParam);
 
         if (!isAnyEditFieldEmpty(locationField, descriptionField)) {
             if (honorCheckBox.isChecked()) {
@@ -186,7 +182,7 @@ public class IncidentDetail extends Fragment {
         for (EditText field : fields) {
             if (field.getText().toString().trim().equals(Utils.Constants.EMPTY_STRING)) {
                 isAnyEmpty = true;
-                Utils.switchInvalidFieldsBackColor(false, field);
+                 Utils.makeToast(context, R.string.description_or_location_empty);
                 break;
             }
         }
@@ -251,9 +247,11 @@ public class IncidentDetail extends Fragment {
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case Utils.Constants.VIDEO_REQUEST_CODE:
-                    break; //TODO doing nothing yet
+                    selectedMediaType = MediaType.VIDEO;
+                    break;
                 case Utils.Constants.CAMERA_REQUEST_CODE:
-                    break; //TODO doing nothing yet
+                    selectedMediaType = MediaType.PHOTO;
+                    break;
                 case Utils.Constants.GALLERY_PHOTO_REQUEST:
                     if (data != null) {
                         photoFileName = retrieveFilePathFromUri(data.getData(), MediaStore.Images.Media.DATA);
@@ -273,6 +271,18 @@ public class IncidentDetail extends Fragment {
                     }
                     break;
             }
+            if(selectedMediaType != MediaType.NONE){
+                setAttachedMediaTextValue(selectedMediaType.toString());
+            }
+        }
+
+    }
+
+    private void setAttachedMediaTextValue(String textValue){
+        View mainView = getView();
+        if(mainView != null){
+            TextView attachedMediaTextView  = (TextView)mainView.findViewById(R.id.attachedMedia);
+            attachedMediaTextView.setText(textValue.toLowerCase());
         }
     }
 

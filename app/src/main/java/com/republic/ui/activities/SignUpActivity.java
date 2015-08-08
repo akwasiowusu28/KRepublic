@@ -55,29 +55,49 @@ public class SignUpActivity extends Activity {
                 EditText passwordField = (EditText) findViewById(R.id.password);
                 EditText confirmPasswordField = (EditText) findViewById(R.id.confirmPassword);
 
-                 name = ((EditText) findViewById(R.id.userName)).getText().toString();
-                 password = passwordField.getText().toString();
-                 confirmPassword = confirmPasswordField.getText().toString();
+                name = ((EditText) findViewById(R.id.userName)).getText().toString();
+                password = passwordField.getText().toString();
+                confirmPassword = confirmPasswordField.getText().toString();
 
                 phoneNumber = ((EditText) findViewById(R.id.phoneNumber)).getText().toString();
                 String goodChars = Utils.Constants.NUMS_REGEX;
 
+                if (isNoFieldEmpty()) {
 
-                if ((!phoneNumber.matches(goodChars))) {
+                    if ((!phoneNumber.matches(goodChars))) {
 
-                    Utils.makeToast(context, R.string.wrong_number_input);
+                        Utils.makeToast(context, R.string.wrong_number_input);
 
-                } else {
+                    } else {
 
-                    if(isPasswordMatch()) {
-                        String code = ((TextView) findViewById(R.id.countryCodeField)).getText().toString();
-                        phoneNumber = code + phoneNumber;
-                        signUpAsync().execute(null, null, null);
+                        if (isPasswordMatch()) {
+                            String code = ((TextView) findViewById(R.id.countryCodeField)).getText().toString();
+                            phoneNumber = code + phoneNumber;
+                            signUpAsync().execute(null, null, null);
+                        }
+
                     }
-
                 }
             }
         });
+    }
+
+    private boolean isNoFieldEmpty(){
+        boolean noneEmpty = true;
+        String emptyString = Utils.Constants.EMPTY_STRING;
+        if(name.trim().equals(emptyString)){
+            Utils.makeToast(context, R.string.empty_name);
+            noneEmpty = false;
+        }
+        else if (phoneNumber.trim().equals(emptyString)){
+            Utils.makeToast(context, R.string.empty_phone);
+            noneEmpty = false;
+        }
+        else if(password.trim().equals(emptyString)){
+            Utils.makeToast(context, R.string.empty_pass);
+            noneEmpty = false;
+        }
+        return noneEmpty;
     }
 
     private void setupAreaCodeField(){
@@ -140,10 +160,12 @@ public class SignUpActivity extends Activity {
 
     private void confirmPhone(final String name, final String phone, final String password) {
 
+        Utils.writeToPref(this,Utils.Constants.USER_NAME, name);
+        Utils.writeToPref(this, Utils.Constants.PASSWORD, password);
+        Utils.writeToPref(this, Utils.Constants.PHONE, phone);
+        Utils.writeToPref(this, Utils.Constants.USER_CONFIRMED, String.valueOf(false));
+        Utils.writeToPref(this, Utils.Constants.USER_TOKEN, Utils.Constants.USER_TEMP_TOKEN);
         Intent intent = new Intent(this, ConfirmActivity.class);
-        intent.putExtra(Utils.Constants.USER_NAME, name);
-        intent.putExtra(Utils.Constants.PASSWORD, password);
-        intent.putExtra(Utils.Constants.PHONE, phone);
         startActivity(intent);
 
         finish();

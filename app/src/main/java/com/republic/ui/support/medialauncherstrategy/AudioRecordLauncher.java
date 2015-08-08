@@ -4,6 +4,7 @@ import android.media.MediaRecorder;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 
@@ -12,7 +13,6 @@ import com.republic.ui.support.Logger;
 import com.republic.ui.support.Utils;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 /** *
@@ -24,12 +24,18 @@ public class AudioRecordLauncher implements Launcher{
     private ImageButton voiceButton;
     private MediaRecorder audioRecorder;
     private String audioFileName;
-
+    private CountDownTimer countDownTimer;
 
     public AudioRecordLauncher(Fragment fragment){
         super();
-        recordingButton = (Button)fragment.getView().findViewById(R.id.recordingButton);
-        voiceButton = (ImageButton)fragment.getView().findViewById(R.id.voiceButton);
+        if(fragment != null){
+            View view = fragment.getView();
+            if(view != null){
+                recordingButton = (Button)view.findViewById(R.id.recordingButton);
+                voiceButton = (ImageButton)view.findViewById(R.id.voiceButton);
+            }
+        }
+
     }
 
     @Override
@@ -40,12 +46,16 @@ public class AudioRecordLauncher implements Launcher{
         audioRecorder.start();
 
 
-        new CountDownTimer(30000, 1000) {
+        countDownTimer = new CountDownTimer(180000, 1000) {
             @Override
             public void onTick(long remaining) {
-                String s = String.format("%d : %d",
-                        TimeUnit.MILLISECONDS.toMinutes(remaining),
-                        TimeUnit.MILLISECONDS.toSeconds(remaining));
+
+                long minutes = TimeUnit.MILLISECONDS.toMinutes(remaining);
+                long seconds = TimeUnit.MILLISECONDS.toSeconds(remaining) - TimeUnit.MINUTES.toSeconds(minutes);
+
+                String s = String.format("%d : %02d",
+                        minutes,
+                        seconds);
                 recordingButton.setText(s);
 
             }
@@ -53,13 +63,22 @@ public class AudioRecordLauncher implements Launcher{
             @Override
             public void onFinish() {
 
-                recordingButton.setCompoundDrawables(null, null, null, null);
+                recordingButton.setCompoundDrawables(null, null, null, null); //TODO: DRY
                 recordingButton.setText("Done!");
                 disposeAudioRecorder();
             }
         }.start();
 
         return audioFileName;
+    }
+
+    public void stopRecording(){
+        if(countDownTimer != null){
+            countDownTimer.cancel();
+        }
+        disposeAudioRecorder();
+        recordingButton.setCompoundDrawables(null, null, null, null); //TODO: DRY
+        recordingButton.setText("Done!");
     }
 
     private void toggleRecordingButtonsVisibility(boolean isRecording) {
@@ -83,7 +102,7 @@ public class AudioRecordLauncher implements Launcher{
 
         try {
             audioRecorder.prepare();
-        } catch (IOException e) {
+        } catch (Exception e) {
             Logger.log(AudioRecordLauncher.class, e.getMessage());
         }
     }

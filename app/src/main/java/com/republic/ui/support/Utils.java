@@ -42,9 +42,9 @@ public class Utils {
         public static final String PAGE_PHOTOS = "1030146627004888/photos";
         public static final String MEDIA_PATH = "media/";
         private static final String MP4 = ".mp4";
-        public static final int GALLERY_PHOTO_REQUEST = 2888;
-        public static final int GALLERY_VIDEO_REQUEST = 28888;
-        public static final int GALLERY_AUDIO_REQUEST = 288888;
+        public static final int GALLERY_PHOTO_REQUEST = 208;
+        public static final int GALLERY_VIDEO_REQUEST = 209;
+        public static final int GALLERY_AUDIO_REQUEST = 210;
         public static final String SELECTED_CORRUPTION_TYPE = "SelectedCorruptionType";
         public static final String PREF_FILE = "com.republic.RepublicPREF";
         public static final String EMPTY_STRING = "";
@@ -64,6 +64,7 @@ public class Utils {
         public static final String USER_NAME ="username";
         public static final String PASSWORD = "password";
         public static final String CONFIRM_CODE ="confirmCode";
+        public static final String USER_TEMP_TOKEN = "temp_token";
     }
 
     private static Drawable defaultEditTextBackground = null;

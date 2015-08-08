@@ -30,9 +30,8 @@ public class MainActivity extends AppCompatActivity
 
     private NavigationDrawerFragment mNavigationDrawerFragment;
 
-    private CharSequence mTitle;
     private UserController userController;
-    private boolean loginRequested = false;
+    private boolean userExistAndNeedsConfirm = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,14 +46,11 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
-        mTitle = getTitle();
 
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
-
-        redirectIfNotLoggedIn();
 
     }
 
@@ -65,20 +61,30 @@ public class MainActivity extends AppCompatActivity
             userController.findUser(Utils.getDeviceId(this), new OperationCallback<User>() {
                 @Override
                 public void performOperation(User user) {
-                    session.setUser(user);
+                    if (user != null)
+                        session.setUser(user);
+                    else
+                        redirectIfNotLoggedInOrConfirmed();
                 }
             });
         }
     }
 
-    private void redirectIfNotLoggedIn() {
+    private void redirectIfNotNumberConfirmed() {
+        String userConfirmedPrefValue = Utils.readFromPref(this, Utils.Constants.USER_CONFIRMED);
+        if (!Boolean.parseBoolean(userConfirmedPrefValue)) {
+            launchRedirectActivity(ConfirmActivity.class);
+        }
+    }
 
-        if (userController != null) {
-            String token = Utils.readFromPref(this, Utils.Constants.USER_TOKEN);
-            if (Utils.isEmptyString(token)) {
-                loginRequested = true;
-                launchRedirectActivity(LoginActivity.class);
-            }
+    private void redirectIfNotLoggedInOrConfirmed() {
+
+        String token = Utils.readFromPref(this, Utils.Constants.USER_TOKEN);
+        if (Utils.isEmptyString(token)) {
+
+            launchRedirectActivity(LoginActivity.class);
+        } else {
+            redirectIfNotNumberConfirmed();
         }
     }
 
@@ -133,12 +139,12 @@ public class MainActivity extends AppCompatActivity
         return super.onCreateOptionsMenu(menu);
     }
 
-    private void shareAppOnFacebook(){
-        if(AppInviteDialog.canShow()) {
+    private void shareAppOnFacebook() {
+        if (AppInviteDialog.canShow()) {
             AppInviteContent content = new AppInviteContent.Builder()
                     .setApplinkUrl("https://fb.me/813785042073183")
                     .build();
-                AppInviteDialog.show(this, content);
+            AppInviteDialog.show(this, content);
         }
     }
 

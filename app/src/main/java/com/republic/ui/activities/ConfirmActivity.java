@@ -2,6 +2,7 @@ package com.republic.ui.activities;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -49,10 +50,9 @@ public class ConfirmActivity extends Activity {
     }
 
     private void retrieveUserDetails() {
-        Intent intent = getIntent();
-        name = intent.getStringExtra(Utils.Constants.USER_NAME);
-        phone = intent.getStringExtra(Utils.Constants.PHONE);
-        password = intent.getStringExtra(Utils.Constants.PASSWORD);
+        name = Utils.readFromPref(this, Utils.Constants.USER_NAME);
+        phone = Utils.readFromPref(this, Utils.Constants.PHONE);
+        password = Utils.readFromPref(this, Utils.Constants.PASSWORD);
     }
 
     private void initializeFields() {
@@ -88,7 +88,8 @@ public class ConfirmActivity extends Activity {
                 new OperationCallback<User>() {
 
                     @Override
-                    public void performOperation(User arg) {
+                    public void performOperation(User user) {
+                        Utils.writeToPref(ConfirmActivity.this, Utils.Constants.USER_TOKEN, user.getObjectId());
                         userController.login(phone, password, userLoginCallBack);
                     }
 
@@ -103,7 +104,9 @@ public class ConfirmActivity extends Activity {
     private OperationCallback<User> userLoginCallBack = new OperationCallback<User>() {
         @Override
         public void performOperation(User user) {
-            Utils.writeToPref(ConfirmActivity.this, Utils.Constants.USER_TOKEN, user.getObjectId());
+            Context context = ConfirmActivity.this;
+            Utils.writeToPref(context, Utils.Constants.USER_TOKEN, user.getObjectId());
+            Utils.writeToPref(context, Utils.Constants.CONFIRM_CODE, String.valueOf(true));
             dismissProgressDialog();
             launchMainActivity();
         }
