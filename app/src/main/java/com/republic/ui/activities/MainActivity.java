@@ -61,8 +61,13 @@ public class MainActivity extends AppCompatActivity
             userController.findUser(Utils.getDeviceId(this), new OperationCallback<User>() {
                 @Override
                 public void performOperation(User user) {
-                    if (user != null)
+                    if (user != null) {
                         session.setUser(user);
+                        String userTokenOnPhone = Utils.readFromPref(MainActivity.this, Utils.Constants.USER_TOKEN);
+                        if(Utils.isEmptyString(userTokenOnPhone)){
+                            launchRedirectActivity(LoginActivity.class);
+                        }
+                    }
                     else
                         redirectIfNotLoggedInOrConfirmed();
                 }

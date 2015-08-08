@@ -37,7 +37,8 @@ public class VideoPoster implements Poster {
             public void onCompleted(GraphResponse graphResponse) {
                 if (graphResponse.getError() == null) {
                     try {
-                        corruption.setPostId(graphResponse.getJSONObject().getString(Utils.Constants.POST_ID));
+                        String post_Id = graphResponse.getJSONObject().getString("id");
+                        corruption.setPostId(post_Id);
                     } catch (JSONException e) {
                         Logger.log(AudioPoster.class, e.getMessage());
                     }
